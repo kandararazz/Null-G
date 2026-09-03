@@ -25,7 +25,7 @@
       --neon-silver: #e2e8f0;
       --neon-bronze: #cd7f32;
       --bg-dark: #02040a;
-      --panel-bg: rgba(10, 16, 26, 0.85);
+      --panel-bg: rgba(10, 16, 26, 0.88);
       --panel-border: rgba(0, 229, 255, 0.4);
       --font-title: 'Orbitron', sans-serif;
       --font-ui: 'Rajdhani', sans-serif;
@@ -161,7 +161,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 8px;
+      gap: 6px;
     }
 
     /* Vertical Segmented HP Gauge */
@@ -173,22 +173,22 @@
       border: 1px solid var(--panel-border);
       box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
       border-radius: 6px;
-      padding: 10px 10px;
+      padding: 8px 8px;
       backdrop-filter: blur(8px);
-      gap: 6px;
+      gap: 4px;
     }
 
     .hp-title {
       font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 2px;
+      font-size: 10px;
+      letter-spacing: 1px;
       color: var(--neon-cyan);
       text-align: center;
     }
 
     .hp-bar-bg {
-      width: 18px;
-      height: 110px;
+      width: 16px;
+      height: 100px;
       background: rgba(0, 0, 0, 0.6);
       border-radius: 4px;
       overflow: hidden;
@@ -225,48 +225,48 @@
 
     .hp-value {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10px;
       color: #fff;
     }
 
     .shield-hud-badge {
       font-family: var(--font-title);
-      font-size: 10px;
+      font-size: 9px;
       color: var(--neon-cyan);
       background: rgba(0, 229, 255, 0.15);
       border: 1px solid var(--neon-cyan);
       border-radius: 4px;
-      padding: 3px 8px;
+      padding: 2px 6px;
       margin-top: 2px;
       display: none;
-      box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
     }
 
-    /* HUD Home Button */
+    /* HUD Buttons (Sleeker & Slightly Smaller) */
     .hud-home-btn {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
       color: var(--neon-cyan);
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 4px;
-      padding: 8px 14px;
+      padding: 6px 10px;
       cursor: pointer;
       pointer-events: auto;
-      min-height: 42px;
-      box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+      min-height: 34px;
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
       transition: all 0.15s ease;
       white-space: nowrap;
       text-align: center;
     }
 
     .hud-home-btn:hover, .hud-home-btn:active {
-      transform: translateY(2px);
+      transform: translateY(1px);
       background: rgba(0, 229, 255, 0.2);
       border-color: var(--neon-cyan);
-      box-shadow: 0 0 18px rgba(0, 229, 255, 0.5);
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.5);
     }
 
     /* Wave, Score, Coins & Boss HP Bar (Center Top) */
@@ -274,44 +274,44 @@
       text-align: center;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.25);
       border-radius: 8px;
-      padding: 10px 24px;
+      padding: 8px 20px;
       backdrop-filter: blur(8px);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      min-width: 280px;
+      gap: 3px;
+      min-width: 260px;
     }
 
     .wave-badge {
       font-family: var(--font-title);
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
       color: var(--neon-cyan);
-      text-shadow: 0 0 14px var(--neon-cyan);
-      letter-spacing: 3px;
+      text-shadow: 0 0 12px var(--neon-cyan);
+      letter-spacing: 2px;
     }
 
     .score-txt {
       font-family: var(--font-mono);
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       color: #fff;
-      text-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
-      letter-spacing: 3px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      letter-spacing: 2px;
     }
 
     .hud-center-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .coin-txt {
       font-family: var(--font-mono);
-      font-size: 13px;
+      font-size: 12px;
       color: var(--neon-gold);
       text-shadow: 0 0 8px var(--neon-gold);
       letter-spacing: 1px;
@@ -319,23 +319,23 @@
 
     .hud-shop-btn {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       letter-spacing: 1px;
       color: #000;
       background: linear-gradient(135deg, var(--neon-gold), #ff8800);
       border: none;
       border-radius: 4px;
-      padding: 5px 12px;
+      padding: 4px 10px;
       cursor: pointer;
       pointer-events: auto;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
       transition: all 0.15s ease;
     }
 
     .hud-shop-btn:hover, .hud-shop-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 0 18px rgba(255, 215, 0, 0.8);
+      transform: translateY(1px);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
     }
 
     /* BOSS HP BAR HUD CONTAINER */
@@ -359,10 +359,10 @@
 
     .boss-hp-bar-bg {
       width: 100%;
-      height: 12px;
+      height: 10px;
       background: rgba(255, 0, 127, 0.15);
       border: 1px solid var(--neon-pink);
-      border-radius: 6px;
+      border-radius: 5px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
     }
@@ -379,9 +379,9 @@
     .radar-container {
       background: rgba(5, 10, 25, 0.88);
       border: 1px solid var(--neon-cyan);
-      box-shadow: 0 0 18px rgba(0, 229, 255, 0.3);
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
       border-radius: 8px;
-      padding: 8px;
+      padding: 6px;
       backdrop-filter: blur(8px);
       display: flex;
       flex-direction: column;
@@ -390,15 +390,15 @@
 
     .radar-title {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9px;
       color: var(--neon-cyan);
       letter-spacing: 2px;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     #radarCanvas {
-      width: 100px;
-      height: 140px;
+      width: 90px;
+      height: 125px;
       background: rgba(0, 0, 0, 0.75);
       border: 1px solid rgba(0, 229, 255, 0.3);
       border-radius: 4px;
@@ -412,7 +412,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       font-family: var(--font-title);
-      font-size: 44px;
+      font-size: 40px;
       font-weight: 900;
       color: var(--neon-amber);
       text-shadow: 0 0 25px var(--neon-amber);
@@ -441,13 +441,13 @@
       100% { opacity: 1.0; transform: translate(-50%, -50%) scale(1.12); }
     }
 
-    /* Mobile Touch Controls Layer (Virtual Joystick + Fire Trigger) */
+    /* Mobile Touch Controls Layer (Virtual Joystick + Fire Trigger Button) */
     .mobile-controls-layer {
       position: absolute;
-      bottom: 24px;
+      bottom: 20px;
       left: 0;
       width: 100%;
-      padding: 0 28px;
+      padding: 0 24px;
       display: none; /* AUTO-DETECTED: Shown ONLY on mobile touch devices */
       justify-content: space-between;
       align-items: flex-end;
@@ -458,45 +458,45 @@
     /* Virtual Analog Thumbstick */
     .joystick-base {
       position: relative;
-      width: 100px;
-      height: 100px;
+      width: 90px;
+      height: 90px;
       background: rgba(0, 229, 255, 0.12);
       border: 2px solid var(--neon-cyan);
       border-radius: 50%;
-      box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.35);
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .joystick-thumb {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       background: rgba(0, 229, 255, 0.65);
       border: 2px solid #fff;
       border-radius: 50%;
-      box-shadow: 0 0 18px var(--neon-cyan);
+      box-shadow: 0 0 16px var(--neon-cyan);
       transition: transform 0.04s linear;
     }
 
     /* Large Circular Fire Trigger Button */
     .touch-btn-fire {
-      width: 90px;
-      height: 90px;
-      min-width: 56px;
-      min-height: 56px;
+      width: 80px;
+      height: 80px;
+      min-width: 50px;
+      min-height: 50px;
       background: rgba(255, 0, 127, 0.25);
       border: 2px solid var(--neon-pink);
       border-radius: 50%;
       color: var(--neon-pink);
       font-family: var(--font-title);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
       letter-spacing: 2px;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 0 25px rgba(255, 0, 127, 0.5);
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
       cursor: pointer;
       touch-action: none;
       user-select: none;
@@ -511,14 +511,14 @@
     /* Permanent Sci-Fi Creator Branding Footer */
     .creator-branding {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 4px;
       color: var(--neon-cyan);
       text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 229, 255, 0.5);
       text-align: center;
       pointer-events: none;
-      margin-top: 14px;
+      margin-top: 10px;
     }
 
     /* Overlay Screen Menus & Modals */
@@ -547,9 +547,9 @@
     /* TITLE SCREEN LOGO & BADGE */
     .title-logo {
       font-family: var(--font-title);
-      font-size: 72px;
+      font-size: 64px;
       font-weight: 900;
-      letter-spacing: 12px;
+      letter-spacing: 10px;
       color: var(--neon-cyan);
       text-shadow: 0 0 30px var(--neon-cyan), 0 0 60px var(--neon-blue-glow);
       margin-bottom: 2px;
@@ -558,10 +558,10 @@
 
     .sub-badge {
       font-family: var(--font-mono);
-      font-size: 13px;
-      letter-spacing: 6px;
+      font-size: 12px;
+      letter-spacing: 5px;
       color: var(--neon-amber);
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       text-transform: uppercase;
       text-align: center;
       text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
@@ -570,15 +570,15 @@
     .menu-panel {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      box-shadow: 0 0 35px rgba(0, 229, 255, 0.25);
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.25);
       border-radius: 12px;
-      padding: 26px 32px;
+      padding: 20px 26px;
       width: 90%;
-      max-width: 520px;
+      max-width: 480px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     /* Pilot Identity Input Bar */
@@ -587,12 +587,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .pilot-identity-bar label {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10px;
       color: var(--neon-cyan);
       letter-spacing: 2px;
     }
@@ -600,8 +600,8 @@
     .pilot-identity-input {
       width: 100%;
       font-family: var(--font-mono);
-      font-size: 15px;
-      padding: 12px 16px;
+      font-size: 14px;
+      padding: 10px 14px;
       background: rgba(0, 0, 0, 0.7);
       border: 1px solid var(--panel-border);
       border-radius: 6px;
@@ -609,42 +609,42 @@
       text-align: center;
       letter-spacing: 2px;
       outline: none;
-      box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
       transition: all 0.2s ease;
     }
 
     .pilot-identity-input:focus {
       border-color: var(--neon-cyan);
-      box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.5);
     }
 
     .pilot-identity-input::placeholder {
       color: rgba(0, 229, 255, 0.4);
     }
 
-    /* VERTICAL CYBER-STRIP BUTTON DESIGN SYSTEM */
+    /* VERTICAL CYBER-STRIP BUTTON DESIGN SYSTEM (SLEEK & SLIGHTLY SMALLER) */
     .cyber-strip-group {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
     }
 
     .btn-cyber-strip {
       font-family: var(--font-mono);
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 700;
-      letter-spacing: 3px;
-      padding: 16px 28px;
-      min-height: 56px;
+      letter-spacing: 2px;
+      padding: 11px 20px;
+      min-height: 44px;
       border: 1px solid rgba(0, 229, 255, 0.4);
       background: rgba(10, 16, 26, 0.85);
       color: #fff;
       cursor: pointer;
       touch-action: none;
       user-select: none;
-      clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
-      box-shadow: 0 0 18px rgba(0, 229, 255, 0.25);
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
       transition: all 0.15s ease;
       width: 100%;
       text-align: center;
@@ -658,42 +658,42 @@
       background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(0, 85, 255, 0.4));
       border-color: var(--neon-cyan);
       color: var(--neon-cyan);
-      box-shadow: 0 0 25px rgba(0, 229, 255, 0.45);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
     }
 
     .btn-cyber-strip.primary-launch:hover, .btn-cyber-strip.primary-launch:active {
-      transform: translateY(2px);
+      transform: translateY(1px);
       background: var(--neon-cyan);
       color: #000;
-      box-shadow: 0 0 35px var(--neon-cyan);
+      box-shadow: 0 0 30px var(--neon-cyan);
     }
 
     /* Leaderboard Purple Accent Button */
     .btn-cyber-strip.purple-accent {
       border-color: var(--neon-purple);
       color: var(--neon-purple);
-      box-shadow: 0 0 18px rgba(168, 85, 247, 0.25);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
     }
 
     .btn-cyber-strip.purple-accent:hover, .btn-cyber-strip.purple-accent:active {
-      transform: translateY(2px);
+      transform: translateY(1px);
       background: var(--neon-purple);
       color: #000;
-      box-shadow: 0 0 30px var(--neon-purple);
+      box-shadow: 0 0 25px var(--neon-purple);
     }
 
     /* Armory Amber Accent Button */
     .btn-cyber-strip.amber-accent {
       border-color: var(--neon-amber);
       color: var(--neon-amber);
-      box-shadow: 0 0 18px rgba(255, 170, 0, 0.25);
+      box-shadow: 0 0 15px rgba(255, 170, 0, 0.25);
     }
 
     .btn-cyber-strip.amber-accent:hover, .btn-cyber-strip.amber-accent:active {
-      transform: translateY(2px);
+      transform: translateY(1px);
       background: var(--neon-amber);
       color: #000;
-      box-shadow: 0 0 30px var(--neon-amber);
+      box-shadow: 0 0 25px var(--neon-amber);
     }
 
     .btn-secondary {
@@ -711,7 +711,7 @@
     .shop-items-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 10px;
       width: 100%;
     }
 
@@ -719,17 +719,17 @@
       background: rgba(15, 22, 45, 0.85);
       border: 1px solid var(--panel-border);
       border-radius: 8px;
-      padding: 12px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       transition: all 0.2s ease;
     }
 
     .shop-item-card:hover {
       border-color: var(--neon-gold);
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
     }
 
     .shop-item-header {
@@ -739,18 +739,18 @@
     }
 
     .shop-item-icon {
-      font-size: 24px;
+      font-size: 22px;
     }
 
     .shop-item-title {
       font-family: var(--font-title);
-      font-size: 13px;
+      font-size: 12px;
       color: var(--neon-cyan);
       font-weight: 700;
     }
 
     .shop-item-desc {
-      font-size: 11px;
+      font-size: 10.5px;
       color: #a0aec0;
       line-height: 1.3;
     }
@@ -764,27 +764,27 @@
 
     .shop-item-cost {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11px;
       color: var(--neon-gold);
       font-weight: 700;
     }
 
     .btn-buy {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 6px 14px;
+      padding: 5px 12px;
       background: linear-gradient(135deg, var(--neon-gold), #ff8800);
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       color: #000;
       cursor: pointer;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
       transition: transform 0.15s ease, opacity 0.15s ease;
     }
 
     .btn-buy:hover {
-      transform: scale(1.05);
+      transform: scale(1.04);
     }
 
     .btn-buy:disabled {
@@ -799,19 +799,19 @@
       background: var(--panel-bg);
       border: 2px solid var(--neon-cyan);
       box-shadow: 0 0 35px rgba(0, 229, 255, 0.35);
-      border-radius: 14px;
-      padding: 20px 24px;
+      border-radius: 12px;
+      padding: 16px 20px;
       width: 92%;
-      max-width: 640px;
+      max-width: 620px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .leaderboard-table-container {
       width: 100%;
-      max-height: 250px;
+      max-height: 240px;
       overflow-y: auto;
       border: 1px solid rgba(0, 229, 255, 0.2);
       border-radius: 8px;
@@ -823,7 +823,7 @@
       border-collapse: collapse;
       text-align: left;
       font-family: var(--font-ui);
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .leaderboard-table th {
@@ -831,7 +831,7 @@
       font-size: 11px;
       color: var(--neon-cyan);
       letter-spacing: 2px;
-      padding: 10px 14px;
+      padding: 9px 12px;
       background: rgba(0, 229, 255, 0.12);
       border-bottom: 1px solid rgba(0, 229, 255, 0.3);
       position: sticky;
@@ -840,7 +840,7 @@
     }
 
     .leaderboard-table td {
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       color: #e2e8f0;
       font-family: var(--font-mono);
@@ -871,22 +871,22 @@
     /* Submission Bar Container */
     .leaderboard-submit-bar {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .leaderboard-submit-bar input {
       flex: 1;
       font-family: var(--font-mono);
-      font-size: 13px;
-      padding: 10px 14px;
+      font-size: 12px;
+      padding: 8px 12px;
       background: rgba(0, 0, 0, 0.7);
       border: 1px solid var(--neon-cyan);
-      border-radius: 8px;
+      border-radius: 6px;
       color: var(--neon-cyan);
       outline: none;
-      box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
+      box-shadow: 0 0 8px rgba(0, 229, 255, 0.15);
       letter-spacing: 1px;
     }
 
@@ -896,21 +896,21 @@
 
     .leaderboard-submit-bar button {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      padding: 10px 20px;
+      padding: 8px 16px;
       background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       color: #fff;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
       transition: transform 0.15s ease, opacity 0.15s ease;
       white-space: nowrap;
     }
 
     .leaderboard-submit-bar button:hover {
-      transform: translateY(2px);
+      transform: translateY(1px);
     }
 
     .leaderboard-submit-bar button:disabled {
@@ -929,13 +929,13 @@
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       color: var(--neon-cyan);
-      width: 42px;
-      height: 42px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 18px;
+      font-size: 16px;
       cursor: pointer;
       z-index: 30;
       pointer-events: auto;
@@ -1024,7 +1024,7 @@
         <!-- Right: Tactical Mini-Radar -->
         <div class="radar-container">
           <div class="radar-title">TACTICAL RADAR</div>
-          <canvas id="radarCanvas" width="100" height="140"></canvas>
+          <canvas id="radarCanvas" width="90" height="125"></canvas>
         </div>
       </div>
 
@@ -1042,8 +1042,8 @@
 
     <!-- GLOBAL LEADERBOARD MODAL (#leaderboardModal) -->
     <div id="leaderboardModal" class="menu-screen hidden">
-      <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-cyan));">GLOBAL TOP 10 PILOTS</div>
-      <div class="sub-badge">LIVE TELEMETRY RANKINGS</div>
+      <div class="title-logo" style="font-size: 34px; filter: drop-shadow(0 0 20px var(--neon-cyan));">GLOBAL LEADERBOARD</div>
+      <div class="sub-badge">TOP 10 PILOTS TELEMETRY</div>
 
       <div class="leaderboard-panel">
         <div class="leaderboard-table-container">
@@ -1068,7 +1068,7 @@
           <button id="sendScoreBtn">SUBMIT SCORE</button>
         </div>
 
-        <button id="closeLeaderboardBtn" class="btn-cyber-strip purple-accent" style="margin-top: 4px; min-height: 44px; font-size: 14px;">[ CLOSE RANKINGS ]</button>
+        <button id="closeLeaderboardBtn" class="btn-cyber-strip purple-accent" style="margin-top: 2px; min-height: 38px; font-size: 12px;">[ CLOSE LEADERBOARD ]</button>
       </div>
 
       <div class="creator-branding">CREATED BY RAZA</div>
@@ -1076,17 +1076,17 @@
 
     <!-- HOME CONFIRMATION MODAL -->
     <div id="homeConfirmModal" class="menu-screen hidden">
-      <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-amber));">RETURN TO MAIN MENU?</div>
+      <div class="title-logo" style="font-size: 32px; filter: drop-shadow(0 0 20px var(--neon-amber));">RETURN TO MAIN MENU?</div>
       <div class="sub-badge">PAUSED — CURRENT MISSION PROGRESS WILL BE RESET</div>
 
-      <div class="menu-panel" style="max-width: 440px; text-align: center;">
-        <div style="font-size: 13px; color: #a0aec0; line-height: 1.4;">
+      <div class="menu-panel" style="max-width: 420px; text-align: center;">
+        <div style="font-size: 12px; color: #a0aec0; line-height: 1.4;">
           Are you sure you want to abort the current combat wave and return to the main title screen?
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 8px;">
+        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 6px;">
           <button id="confirmHomeBtn" class="btn-cyber-strip primary-launch">[ CONFIRM HOME ]</button>
-          <button id="cancelHomeBtn" class="btn-cyber-strip btn-secondary" style="min-height: 48px;">RESUME MISSION</button>
+          <button id="cancelHomeBtn" class="btn-cyber-strip btn-secondary" style="min-height: 40px; font-size: 13px;">RESUME MISSION</button>
         </div>
       </div>
 
@@ -1095,13 +1095,13 @@
 
     <!-- IN-GAME POWER-UP SHOP MODAL (ARMORY) -->
     <div id="inGameShopModal" class="menu-screen hidden">
-      <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-gold));">ARMORY & POWER-UPS</div>
+      <div class="title-logo" style="font-size: 32px; filter: drop-shadow(0 0 20px var(--neon-gold));">ARMORY & POWER-UPS</div>
       <div class="sub-badge">PAUSED — UPGRADE YOUR COMBAT SYSTEMS</div>
 
-      <div class="menu-panel" style="max-width: 680px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 4px;">
-          <span style="font-family: var(--font-mono); font-size: 13px; color: var(--neon-cyan);">TACTICAL ENHANCEMENTS</span>
-          <span style="font-family: var(--font-mono); font-size: 14px; color: var(--neon-gold);">COINS: <span id="inGameShopCoins">0000</span></span>
+      <div class="menu-panel" style="max-width: 640px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2px;">
+          <span style="font-family: var(--font-mono); font-size: 12px; color: var(--neon-cyan);">TACTICAL ENHANCEMENTS</span>
+          <span style="font-family: var(--font-mono); font-size: 13px; color: var(--neon-gold);">COINS: <span id="inGameShopCoins">0000</span></span>
         </div>
 
         <div class="shop-items-grid">
@@ -1166,7 +1166,7 @@
           </div>
         </div>
 
-        <button id="closeShopBtn" class="btn-cyber-strip amber-accent" style="margin-top: 6px; min-height: 48px;">[ RESUME MISSION ]</button>
+        <button id="closeShopBtn" class="btn-cyber-strip amber-accent" style="margin-top: 4px; min-height: 40px; font-size: 13px;">[ RESUME MISSION ]</button>
       </div>
 
       <div class="creator-branding">CREATED BY RAZA</div>
@@ -1184,10 +1184,10 @@
           <input type="text" id="homePilotCallsign" class="pilot-identity-input" placeholder="CALLSIGN: RAZA" maxlength="12" />
         </div>
 
-        <!-- Vertical Cyber-Strip Action Buttons -->
+        <!-- Vertical Cyber-Strip Action Buttons (Sleek & Compact) -->
         <div class="cyber-strip-group">
           <button id="startBtn" class="btn-cyber-strip primary-launch">[ LAUNCH MISSION ]</button>
-          <button id="menuLeaderboardBtn" class="btn-cyber-strip purple-accent">[ LEADERBOARD ]</button>
+          <button id="menuLeaderboardBtn" class="btn-cyber-strip purple-accent">[ GLOBAL LEADERBOARD ]</button>
           <button id="menuArmoryBtn" class="btn-cyber-strip amber-accent">[ ARMORY / POWER-UPS ]</button>
         </div>
       </div>
@@ -1198,26 +1198,26 @@
 
     <!-- GAME OVER SCREEN OVERLAY -->
     <div id="gameOverScreen" class="menu-screen hidden">
-      <div class="title-logo" style="font-size: 52px; filter: drop-shadow(0 0 25px var(--neon-pink));">GAME OVER</div>
+      <div class="title-logo" style="font-size: 46px; filter: drop-shadow(0 0 25px var(--neon-pink));">GAME OVER</div>
       <div class="sub-badge" style="color: var(--neon-pink);">HULL DESTROYED</div>
 
-      <div class="menu-panel" style="text-align: center; max-width: 460px;">
-        <div style="font-size: 12px; color: #8a99b5; font-family: var(--font-mono);">FINAL SCORE</div>
-        <div class="score-txt" id="goScore" style="font-size: 36px; color: var(--neon-cyan); margin: 4px 0;">0</div>
+      <div class="menu-panel" style="text-align: center; max-width: 440px;">
+        <div style="font-size: 11px; color: #8a99b5; font-family: var(--font-mono);">FINAL SCORE</div>
+        <div class="score-txt" id="goScore" style="font-size: 32px; color: var(--neon-cyan); margin: 2px 0;">0</div>
 
-        <div style="font-size: 13px; color: var(--neon-amber); font-family: var(--font-mono); margin-bottom: 4px;">
+        <div style="font-size: 12px; color: var(--neon-amber); font-family: var(--font-mono); margin-bottom: 2px;">
           WAVE REACHED: <span id="goWave">01 / 100</span>
         </div>
 
         <!-- Score Submission Bar on Death Screen -->
-        <div class="leaderboard-submit-bar" style="margin: 8px 0;">
+        <div class="leaderboard-submit-bar" style="margin: 6px 0;">
           <input type="text" id="pilotCallsign" placeholder="ENTER CALLSIGN" maxlength="12" />
           <button id="submitScoreBtn">SUBMIT SCORE</button>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
           <button id="retryBtn" class="btn-cyber-strip primary-launch">[ RETRY MISSION ]</button>
-          <button id="homeGoBtn" class="btn-cyber-strip btn-secondary" style="min-height: 48px;">[ BACK TO HOME ]</button>
+          <button id="homeGoBtn" class="btn-cyber-strip btn-secondary" style="min-height: 40px; font-size: 13px;">[ BACK TO HOME ]</button>
         </div>
       </div>
 
@@ -2608,7 +2608,7 @@
         rc.lineWidth = 1.5;
         rc.beginPath();
         rc.moveTo(0, 0);
-        rc.lineTo(Math.cos(this.radarSweepAngle) * 60, Math.sin(this.radarSweepAngle) * 60);
+        rc.lineTo(Math.cos(this.radarSweepAngle) * 55, Math.sin(this.radarSweepAngle) * 55);
         rc.stroke();
         rc.restore();
 
@@ -2631,7 +2631,7 @@
           rc.shadowColor = '#ff0055';
           rc.shadowBlur = 12;
           rc.beginPath();
-          rc.arc(bx, by, 7, 0, Math.PI * 2);
+          rc.arc(bx, by, 6, 0, Math.PI * 2);
           rc.fill();
         }
 
@@ -2644,7 +2644,7 @@
           rc.shadowColor = rc.fillStyle;
           rc.shadowBlur = 6;
           rc.beginPath();
-          rc.arc(ex, ey, e.type === 'laserGate' ? 4 : 2.5, 0, Math.PI * 2);
+          rc.arc(ex, ey, e.type === 'laserGate' ? 3.5 : 2.5, 0, Math.PI * 2);
           rc.fill();
         });
         rc.shadowBlur = 0;
