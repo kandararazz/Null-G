@@ -237,7 +237,7 @@
       box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
     }
 
-    /* Wave, Score & Shop Button (Center Top) */
+    /* Wave, Score, Coins & Boss HP Bar (Center Top) */
     .hud-center {
       text-align: center;
       background: var(--panel-bg);
@@ -250,6 +250,7 @@
       flex-direction: column;
       align-items: center;
       gap: 4px;
+      min-width: 260px;
     }
 
     .wave-badge {
@@ -304,6 +305,43 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
     }
 
+    /* BOSS HP BAR HUD CONTAINER */
+    #bossHpContainer {
+      display: none;
+      width: 100%;
+      margin-top: 4px;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .boss-hp-title {
+      font-family: var(--font-title);
+      font-size: 10px;
+      font-weight: 900;
+      color: var(--neon-pink);
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px var(--neon-pink);
+    }
+
+    .boss-hp-bar-bg {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 0, 127, 0.15);
+      border: 1px solid var(--neon-pink);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
+    }
+
+    .boss-hp-bar-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff0055, #ff007f, #ffaa00);
+      box-shadow: 0 0 12px #ff007f;
+      transition: width 0.1s linear;
+    }
+
     /* Tactical Mini-Radar (Right Edge) */
     .radar-container {
       background: rgba(5, 10, 25, 0.85);
@@ -334,7 +372,7 @@
       display: block;
     }
 
-    /* On-Screen Wave Banner */
+    /* On-Screen Wave & Boss Warning Banner */
     #waveBanner {
       position: absolute;
       top: 35%;
@@ -357,6 +395,17 @@
     #waveBanner.show {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    #waveBanner.boss-warning {
+      color: var(--neon-pink);
+      text-shadow: 0 0 30px var(--neon-pink);
+      animation: flashBoss 0.5s infinite alternate;
+    }
+
+    @keyframes flashBoss {
+      0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.0); }
+      100% { opacity: 1.0; transform: translate(-50%, -50%) scale(1.12); }
     }
 
     /* Mobile Controls Container (Joystick + Fire Button) */
@@ -689,13 +738,21 @@
           <button id="hudHomeBtn" class="hud-home-btn">⌂ HOME</button>
         </div>
 
-        <!-- Center: Wave, Score, Coins & Shop Button -->
+        <!-- Center: Wave, Score, Coins, Shop Button & BOSS HP BAR -->
         <div class="hud-center">
           <div class="wave-badge" id="hudWave">WAVE: 1 / 100</div>
           <div class="score-txt" id="hudScore">000000</div>
           <div class="hud-center-row">
             <div class="coin-txt">⚙ <span id="coinText">0</span> COINS</div>
             <button id="hudShopBtn" class="hud-shop-btn">🛒 [ POWER-UP SHOP ]</button>
+          </div>
+
+          <!-- BOSS HP BAR HUD CONTAINER -->
+          <div id="bossHpContainer">
+            <div class="boss-hp-title">⚠️ DREADNOUGHT BOSS ⚠️ <span id="bossHpTxt">40/40</span></div>
+            <div class="boss-hp-bar-bg">
+              <div id="bossHpFill" class="boss-hp-bar-fill"></div>
+            </div>
           </div>
         </div>
 
@@ -826,7 +883,7 @@
           PILOT READY FOR DEPLOYMENT
         </div>
         <div style="font-size: 13px; color: #a0aec0; text-align: center; line-height: 1.4;">
-          Survive 100 accelerating waves across 10 dynamic galaxy environments. Speed increases by +3% every wave!
+          Survive 100 accelerating waves & recurring Boss Battles every 10 waves! Moderate enemy descent (3-3.5px), 2-hit enemy destruction, and durable cracked asteroids.
         </div>
 
         <button id="startBtn" class="btn-action">START GAME</button>
@@ -863,7 +920,7 @@
   <!-- GAME ENGINE SCRIPT -->
   <script>
     /* ==========================================================================
-       NULL-G: ACCELERATING WAVES & DYNAMIC GALAXY ENGINE (100 WAVES)
+       NULL-G: ACCELERATING WAVES, RECURRING BOSSES & DURABLE OBSTACLES
        CREATED BY RAZA
        ========================================================================== */
 
@@ -957,6 +1014,7 @@
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
+
         osc.start(now);
         osc.stop(now + 0.06);
       }
@@ -975,6 +1033,7 @@
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
+
         osc.start(now);
         osc.stop(now + 0.12);
       }
@@ -1047,7 +1106,6 @@
       }
 
       getTheme(wave) {
-        // 10 Distinct Galaxy Themes across 100 Waves
         if (wave <= 10) return { name: 'DEEP SPACE NAVY', bg1: '#050b1a', bg2: '#02040a', starColor: '#00f0ff' };
         if (wave <= 20) return { name: 'CYBER-GRID CYAN', bg1: '#001a24', bg2: '#000810', starColor: '#00f0ff' };
         if (wave <= 30) return { name: 'VIOLET NEBULA DUST', bg1: '#18052e', bg2: '#080112', starColor: '#a855f7' };
@@ -1064,7 +1122,6 @@
         const ctx = this.ctx;
         const theme = this.getTheme(wave);
 
-        // 3% Per-Wave Speed Scaling Multiplier
         const waveSpeedMult = 1 + (wave - 1) * 0.03;
 
         const grad = ctx.createLinearGradient(0, 0, 0, 720);
@@ -1073,7 +1130,6 @@
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 1280, 720);
 
-        // Parallax Starfield with 3% Per Wave Speed Scaling
         this.stars.forEach(star => {
           star.y += star.speed * 3.0 * waveSpeedMult;
           if (star.y > 720) {
@@ -1109,19 +1165,17 @@
         this.state = STATE.MENU;
         this.background = new DynamicBackground(this.canvas);
 
-        // Currency Data
         this.coins = parseInt(localStorage.getItem('nullg_coins') || '0');
 
-        // Detect Mobile Touch Device
         this.isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         if (this.isTouchDevice) {
           document.getElementById('mobileControlsLayer').style.display = 'flex';
         }
 
-        // Inputs
         this.keys = {};
         this.isFiring = false;
         this.joystickDx = 0;
+        this.boss = null; // Active Boss Flagship
 
         this.setupInputListeners();
         this.setupInGameShopUI();
@@ -1133,7 +1187,6 @@
       }
 
       setupInputListeners() {
-        // Strict Whitelist Keyboard Controls (ONLY valid game keys)
         const VALID_CODES = new Set(['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight', 'Space', 'Escape', 'KeyP', 'KeyB', 'KeyR']);
         const VALID_KEYS = new Set(['a', 'd', 'arrowleft', 'arrowright', ' ', 'escape', 'p', 'b', 'r']);
 
@@ -1142,7 +1195,7 @@
           const key = e.key ? e.key.toLowerCase() : '';
 
           if (!VALID_CODES.has(code) && !VALID_KEYS.has(key)) {
-            return; // Ignore all unassigned keys
+            return;
           }
 
           this.keys[code] = true;
@@ -1190,7 +1243,6 @@
           }
         });
 
-        // Mouse Controls
         this.canvas.addEventListener('mousedown', () => {
           sound.init();
           if (this.state === STATE.PLAYING) {
@@ -1199,7 +1251,6 @@
         });
         window.addEventListener('mouseup', () => { this.isFiring = false; });
 
-        // Mobile Virtual Joystick Setup
         const base = document.getElementById('joystickBase');
         const thumb = document.getElementById('joystickThumb');
 
@@ -1232,21 +1283,17 @@
 
         base.addEventListener('touchend', (e) => { e.preventDefault(); resetJoystick(); }, { passive: false });
 
-        // Mobile Fire Button
         const fireBtn = document.getElementById('btnFire');
         fireBtn.addEventListener('touchstart', (e) => {
           e.preventDefault(); sound.init(); this.isFiring = true;
         }, { passive: false });
         fireBtn.addEventListener('touchend', (e) => { e.preventDefault(); this.isFiring = false; }, { passive: false });
 
-        // UI Buttons
         document.getElementById('startBtn').addEventListener('click', () => { sound.init(); this.startGame(); });
         document.getElementById('retryBtn').addEventListener('click', () => { sound.init(); this.startGame(); });
         document.getElementById('homeGoBtn').addEventListener('click', () => { sound.init(); this.showMenu(); });
         document.getElementById('hudShopBtn').addEventListener('click', () => { sound.init(); this.openInGameShop(); });
         document.getElementById('closeShopBtn').addEventListener('click', () => { sound.init(); this.closeInGameShop(); });
-
-        // HUD HOME BUTTON & CONFIRMATION LISTENERS
         document.getElementById('hudHomeBtn').addEventListener('click', () => { sound.init(); this.openHomeConfirmModal(); });
 
         document.getElementById('audioToggleBtn').addEventListener('click', () => {
@@ -1356,6 +1403,11 @@
         this.enemies = [];
         this.enemyLasers = [];
 
+        if (this.boss) {
+          this.boss.hp -= 15;
+          if (this.boss.hp <= 0) this.destroyBoss();
+        }
+
         for (let a = 0; a < Math.PI * 2; a += 0.1) {
           this.particles.push({
             x: 640, y: 360,
@@ -1372,10 +1424,11 @@
         this.waveEnemiesDefeated = 0;
         this.spawnTimer = 0;
         this.screenShake = 0;
+        this.boss = null;
 
         this.player = {
           x: 640,
-          y: 620, // Locked strictly near bottom
+          y: 620,
           vx: 0,
           angle: 0,
           width: 44,
@@ -1389,7 +1442,8 @@
           friction: 0.84,
           maxVx: 14,
           shootTimer: 0,
-          invulnerableTimer: 0
+          invulnerableTimer: 0,
+          isMovementLocked: false // Movement Lock rule during Boss Battles
         };
 
         this.lasers = [];
@@ -1418,12 +1472,75 @@
         document.getElementById('homeConfirmModal').classList.add('hidden');
       }
 
-      triggerWaveBanner(waveNum) {
+      triggerWaveBanner(waveNum, isBoss = false) {
         sound.playWaveAlarm();
         const banner = document.getElementById('waveBanner');
-        banner.innerText = `WAVE ${waveNum} INCOMING!`;
+        if (isBoss) {
+          banner.innerText = `⚠️ BOSS WARNING ⚠️\nDREADNOUGHT INCOMING!`;
+          banner.classList.add('boss-warning');
+        } else {
+          banner.innerText = `WAVE ${waveNum} INCOMING!`;
+          banner.classList.remove('boss-warning');
+        }
         banner.classList.add('show');
-        setTimeout(() => banner.classList.remove('show'), 2000);
+        setTimeout(() => banner.classList.remove('show'), 2200);
+      }
+
+      // ------------------------------------------------------------------------
+      // RECURRING BOSS BATTLES (EVERY 10 WAVES)
+      // ------------------------------------------------------------------------
+      checkBossTrigger() {
+        // Trigger Boss Battle at Wave 10, 20, 30, 40...
+        if (this.wave % 10 === 0 && !this.boss && this.enemies.length === 0) {
+          this.spawnBoss();
+        }
+      }
+
+      spawnBoss() {
+        const bossHp = 40 + (this.wave * 3);
+        this.boss = {
+          x: 640,
+          y: -100,
+          targetY: 130,
+          vx: 3,
+          width: 140,
+          height: 80,
+          hp: bossHp,
+          maxHp: bossHp,
+          shootTimer: 0,
+          dead: false
+        };
+
+        // Movement Lock Rule: Freeze player movement during Boss Battle
+        this.player.isMovementLocked = true;
+        this.player.vx = 0;
+
+        this.triggerWaveBanner(this.wave, true);
+        document.getElementById('bossHpContainer').style.display = 'flex';
+      }
+
+      destroyBoss() {
+        if (!this.boss) return;
+        sound.playExplosion(true);
+        this.screenShake = 30;
+
+        // Massive Explosion Burst
+        this.createExplosion(this.boss.x, this.boss.y, '#ff007f', 40);
+        this.createExplosion(this.boss.x - 40, this.boss.y, '#ffaa00', 30);
+        this.createExplosion(this.boss.x + 40, this.boss.y, '#00f0ff', 30);
+
+        this.score += 2500;
+        this.coins += 500; // Reward +500 bonus coins on Boss Defeat
+        localStorage.setItem('nullg_coins', this.coins);
+
+        this.boss = null;
+        document.getElementById('bossHpContainer').style.display = 'none';
+
+        // Unlock player movement immediately after Boss defeat
+        this.player.isMovementLocked = false;
+
+        // Advance to next wave
+        this.waveEnemiesDefeated = this.waveEnemiesToDefeat;
       }
 
       gameOver() {
@@ -1435,7 +1552,7 @@
       }
 
       // ------------------------------------------------------------------------
-      // MAIN GAME LOOP & ACCELERATING WAVE UPDATES (3% PER WAVE)
+      // MAIN GAME LOOP & UPDATES
       // ------------------------------------------------------------------------
       loop(timestamp) {
         const dt = Math.min((timestamp - this.lastTime) / 1000, 0.05);
@@ -1453,25 +1570,28 @@
       update(dt) {
         const p = this.player;
 
-        // 1. Player Steering
-        let dir = 0;
-        if (this.keys['a'] || this.keys['arrowleft'] || this.keys['KeyA'] || this.keys['ArrowLeft']) dir -= 1;
-        if (this.keys['d'] || this.keys['arrowright'] || this.keys['KeyD'] || this.keys['ArrowRight']) dir += 1;
+        // 1. Player Steering (MOVEMENT LOCK RULE DURING BOSS)
+        if (!p.isMovementLocked) {
+          let dir = 0;
+          if (this.keys['a'] || this.keys['arrowleft'] || this.keys['KeyA'] || this.keys['ArrowLeft']) dir -= 1;
+          if (this.keys['d'] || this.keys['arrowright'] || this.keys['KeyD'] || this.keys['ArrowRight']) dir += 1;
 
-        if (this.joystickDx !== 0) dir = this.joystickDx;
+          if (this.joystickDx !== 0) dir = this.joystickDx;
 
-        if (dir !== 0) {
-          p.vx += dir * p.accel * (dt * 60);
+          if (dir !== 0) {
+            p.vx += dir * p.accel * (dt * 60);
+          } else {
+            p.vx *= Math.pow(p.friction, dt * 60);
+          }
+
+          p.vx = Math.max(-p.maxVx, Math.min(p.maxVx, p.vx));
+          p.x += p.vx;
+          p.x = Math.max(40, Math.min(1240, p.x));
         } else {
-          p.vx *= Math.pow(p.friction, dt * 60);
+          p.vx = 0; // Frozen in position during Boss fight
         }
 
-        p.vx = Math.max(-p.maxVx, Math.min(p.maxVx, p.vx));
-        p.x += p.vx;
-
-        p.x = Math.max(40, Math.min(1240, p.x));
         p.y = 620;
-
         const targetAngle = (p.vx / p.maxVx) * 0.40;
         p.angle += (targetAngle - p.angle) * 0.20;
 
@@ -1518,21 +1638,47 @@
           if (el.y > 750 || el.dead) this.enemyLasers.splice(i, 1);
         }
 
-        // 6. 3% PER WAVE SPEED & SPAWN ACCELERATION MULTIPLIER
-        const waveSpeedMult = 1 + (this.wave - 1) * 0.03;
-        const targetActiveEnemies = Math.min(10, 5 + Math.floor(this.wave * 0.3));
-        const spawnInterval = Math.max(10, Math.floor(45 / waveSpeedMult));
-        this.spawnTimer++;
+        // 6. Boss Update Logic
+        if (this.boss) {
+          const b = this.boss;
+          if (b.y < b.targetY) b.y += 2;
 
-        if (this.enemies.length < targetActiveEnemies || this.spawnTimer >= spawnInterval) {
-          this.spawnTimer = 0;
-          this.spawnDynamicEnemyFormation(waveSpeedMult);
+          b.x += b.vx;
+          if (b.x <= 200 || b.x >= 1080) b.vx = -b.vx;
+
+          b.shootTimer += dt;
+          if (b.shootTimer >= 1.3) {
+            b.shootTimer = 0;
+            sound.playHit();
+            // 3-Way Spread Plasma Attacks
+            [-3, 0, 3].forEach(vx => {
+              this.enemyLasers.push({
+                x: b.x + (vx * 10), y: b.y + 40, vx: vx, vy: 7, radius: 5, color: '#ff0055'
+              });
+            });
+          }
         }
 
-        // 7. Update Hazards & Dynamic AI
+        // 7. 3% Per-Wave Speed Scaling & Normal Spawning (Halt during Boss)
+        const waveSpeedMult = 1 + (this.wave - 1) * 0.03;
+
+        if (this.wave % 10 === 0 && !this.boss) {
+          this.checkBossTrigger();
+        } else if (!this.boss) {
+          const targetActiveEnemies = Math.min(8, 5 + Math.floor(this.wave * 0.2));
+          const spawnInterval = Math.max(12, Math.floor(45 / waveSpeedMult));
+          this.spawnTimer++;
+
+          if (this.enemies.length < targetActiveEnemies || this.spawnTimer >= spawnInterval) {
+            this.spawnTimer = 0;
+            this.spawnDynamicEnemyFormation(waveSpeedMult);
+          }
+        }
+
+        // 8. Update Hazards, Moderate Speed Enemy AI & Screen Border Bounce
         this.updateEnemies(dt, waveSpeedMult);
 
-        // 8. Update Particles
+        // 9. Update Particles
         for (let i = this.particles.length - 1; i >= 0; i--) {
           const pt = this.particles[i];
           pt.x += pt.vx;
@@ -1541,18 +1687,23 @@
           if (pt.alpha <= 0) this.particles.splice(i, 1);
         }
 
-        // 9. Collisions Check
+        // 10. Collisions Check
         this.checkCollisions();
 
-        // 10. Wave Progression (+100 Coins per Wave Clear, up to Wave 100)
-        if (this.waveEnemiesDefeated >= this.waveEnemiesToDefeat) {
+        // 11. Wave Progression
+        if (this.waveEnemiesDefeated >= this.waveEnemiesToDefeat && !this.boss) {
           if (this.wave < 100) {
             this.wave++;
             this.coins += 100;
             localStorage.setItem('nullg_coins', this.coins);
             this.waveEnemiesDefeated = 0;
             this.waveEnemiesToDefeat = 10 + Math.floor(this.wave * 2.5);
-            this.triggerWaveBanner(this.wave);
+
+            if (this.wave % 10 === 0) {
+              this.checkBossTrigger();
+            } else {
+              this.triggerWaveBanner(this.wave);
+            }
           }
         }
 
@@ -1579,15 +1730,18 @@
         }
       }
 
+      // ------------------------------------------------------------------------
+      // RULE 1: MODERATE ENEMY SPEEDS (3 to 3.5 px/frame descent, 1.5 to 2 px/frame weave)
+      // RULE 2: 2-HIT ENEMY DESTRUCTION RULE & BORDER BOUNCE
+      // ------------------------------------------------------------------------
       spawnDynamicEnemyFormation(waveSpeedMult) {
         const rand = Math.random();
 
-        if (rand < 0.28) {
-          // TYPE A: S-CURVE WEAVERS (Speed & freq scale +3% per wave)
+        if (rand < 0.30) {
+          // S-CURVE WEAVER (Descent: 3-3.5 px/frame, Weave: 1.5-2 px/frame, HP: 2)
           const baseX = 150 + Math.random() * 980;
-          const amp = 80 + Math.random() * 60;
-          const freq = (0.003 + Math.random() * 0.002) * waveSpeedMult;
-          const phase = Math.random() * Math.PI * 2;
+          const amp = 70 + Math.random() * 50;
+          const freq = 0.002 + Math.random() * 0.001;
 
           this.enemies.push({
             type: 'weaver',
@@ -1596,22 +1750,22 @@
             y: -60,
             width: 36,
             height: 40,
-            hp: 3,
-            maxHp: 3,
-            speed: (4.8 + Math.random() * 1.5) * waveSpeedMult,
+            hp: 2, // 2-Hit Destruction Rule
+            maxHp: 2,
+            speed: (3.0 + Math.random() * 0.5) * waveSpeedMult, // 3-3.5 px/frame descent
             amp: amp,
             freq: freq,
-            phase: phase,
+            phase: Math.random() * Math.PI * 2,
             shootTimer: Math.random() * 1.0,
             score: 250
           });
-        } else if (rand < 0.52) {
-          // TYPE B: PINCER SQUADRONS (Speed scales +3% per wave)
+        } else if (rand < 0.55) {
+          // PINCER SQUADRON (Descent: 3-3.5 px/frame, HP: 2)
           const fromLeft = Math.random() < 0.5;
           const spawnX = fromLeft ? -40 : 1320;
           const targetX = 640 + (Math.random() - 0.5) * 200;
-          const vx = (targetX - spawnX) * 0.006 * waveSpeedMult;
-          const vy = (5.2 + Math.random() * 1.2) * waveSpeedMult;
+          const vx = (fromLeft ? 1 : -1) * (1.5 + Math.random() * 0.5); // 1.5 - 2 px/frame horizontal
+          const vy = (3.0 + Math.random() * 0.5) * waveSpeedMult;
 
           this.enemies.push({
             type: 'pincer',
@@ -1619,7 +1773,7 @@
             y: -50,
             width: 38,
             height: 38,
-            hp: 2,
+            hp: 2, // 2-Hit Destruction Rule
             maxHp: 2,
             vx: vx,
             vy: vy,
@@ -1627,8 +1781,8 @@
             shootTimer: Math.random() * 0.8,
             score: 300
           });
-        } else if (rand < 0.72) {
-          // TYPE C: STRAFING INTERCEPTORS
+        } else if (rand < 0.75) {
+          // STRAFING INTERCEPTOR (Descent: 3.2 px/frame, HP: 2)
           const spawnX = 100 + Math.random() * 1080;
           this.enemies.push({
             type: 'strafer',
@@ -1636,37 +1790,39 @@
             y: -60,
             width: 40,
             height: 42,
-            hp: 4,
-            maxHp: 4,
-            speed: 5.0 * waveSpeedMult,
+            hp: 2, // 2-Hit Destruction Rule
+            maxHp: 2,
+            speed: 3.2 * waveSpeedMult,
             pauseY: 180 + Math.random() * 180,
             paused: false,
             pauseTimer: 0,
             burstFired: false,
             score: 350
           });
-        } else if (rand < 0.88) {
-          // HAZARDS
-          if (Math.random() < 0.5) {
-            const gateWidth = 260;
-            const clampedX = 160 + Math.random() * 960;
-            this.enemies.push({
-              type: 'laserGate', x: clampedX, y: -60, width: gateWidth, height: 26, hp: 6, maxHp: 6,
-              speed: 4.5 * waveSpeedMult, score: 350
-            });
-          } else {
-            const spawnX = 80 + Math.random() * 1120;
-            this.enemies.push({
-              type: 'spaceMine', x: spawnX, y: -60, radius: 22, hp: 2, maxHp: 2,
-              speed: 4.2 * waveSpeedMult, score: 200
-            });
-          }
-        } else {
-          // ARMORED ASTEROID
+        } else if (rand < 0.90) {
+          // DURABLE ASTEROID (Takes 3 to 5 hits to break)
           const spawnX = 80 + Math.random() * 1120;
+          const astHp = Math.floor(3 + Math.random() * 3); // 3 to 5 hits
           this.enemies.push({
-            type: 'armoredAsteroid', x: spawnX, y: -60, radius: 32, hp: 4, maxHp: 4,
-            speed: 3.5 * waveSpeedMult, rot: 0, rotSpeed: (Math.random() - 0.5) * 0.05, score: 180
+            type: 'armoredAsteroid',
+            x: spawnX,
+            y: -60,
+            radius: 32,
+            hp: astHp, // Durable Asteroid Rule (3-5 HP)
+            maxHp: astHp,
+            speed: (2.2 + Math.random() * 0.8) * waveSpeedMult,
+            rot: 0,
+            rotSpeed: (Math.random() - 0.5) * 0.05,
+            hitFlashTimer: 0,
+            score: 200
+          });
+        } else {
+          // LASER GATE HAZARD
+          const gateWidth = 260;
+          const clampedX = 160 + Math.random() * 960;
+          this.enemies.push({
+            type: 'laserGate', x: clampedX, y: -60, width: gateWidth, height: 26, hp: 6, maxHp: 6,
+            speed: 3.0 * waveSpeedMult, score: 350
           });
         }
       }
@@ -1678,17 +1834,26 @@
         for (let i = this.enemies.length - 1; i >= 0; i--) {
           const e = this.enemies[i];
 
+          if (e.hitFlashTimer > 0) e.hitFlashTimer -= dt;
+
           if (e.type === 'weaver') {
             e.y += e.speed;
             e.x = e.baseX + Math.sin((now * e.freq) + e.phase) * e.amp;
-            e.x = Math.max(50, Math.min(1230, e.x));
+
+            // BORDER BOUNCE RULE: If enemy strikes left/right border, register 1 hit & reverse direction
+            if (e.x <= 40 || e.x >= 1240) {
+              e.hp -= 1;
+              e.baseX = Math.max(100, Math.min(1180, e.baseX + (e.x <= 40 ? 40 : -40)));
+              sound.playHit();
+              this.createSparks(e.x, e.y, '#ff007f', 6);
+            }
 
             e.shootTimer += dt;
-            if (e.shootTimer >= (1.8 / waveSpeedMult)) {
+            if (e.shootTimer >= (2.0 / waveSpeedMult)) {
               e.shootTimer = 0;
               sound.playHit();
               this.enemyLasers.push({
-                x: e.x, y: e.y + 20, speed: (e.speed + 4.5) * waveSpeedMult, radius: 4.5, color: '#ff0055'
+                x: e.x, y: e.y + 20, speed: (e.speed + 3.5) * waveSpeedMult, radius: 4.5, color: '#ff0055'
               });
             }
           }
@@ -1696,12 +1861,20 @@
             e.x += e.vx;
             e.y += e.vy;
 
+            // BORDER BOUNCE RULE: If pincer strikes left/right border, take 1 hit & reverse vx
+            if (e.x <= 40 || e.x >= 1240) {
+              e.hp -= 1;
+              e.vx = -e.vx;
+              sound.playHit();
+              this.createSparks(e.x, e.y, '#ff007f', 6);
+            }
+
             e.shootTimer += dt;
-            if (e.shootTimer >= (1.6 / waveSpeedMult)) {
+            if (e.shootTimer >= (1.8 / waveSpeedMult)) {
               e.shootTimer = 0;
               sound.playHit();
               this.enemyLasers.push({
-                x: e.x, y: e.y + 20, speed: (e.vy + 4) * waveSpeedMult, radius: 4.5, color: '#ff0055'
+                x: e.x, y: e.y + 20, speed: (e.vy + 3.5) * waveSpeedMult, radius: 4.5, color: '#ff0055'
               });
             }
           }
@@ -1713,17 +1886,17 @@
 
             if (e.paused) {
               e.pauseTimer += dt;
-              if (e.pauseTimer >= 0.22 && !e.burstFired) {
+              if (e.pauseTimer >= 0.25 && !e.burstFired) {
                 e.burstFired = true;
                 sound.playHit();
-                const aimDx = (p.x - e.x) * 0.015;
-                this.enemyLasers.push({ x: e.x - 8, y: e.y + 20, vx: aimDx, vy: 9 * waveSpeedMult, radius: 5, color: '#ff0055' });
+                const aimDx = (p.x - e.x) * 0.012;
+                this.enemyLasers.push({ x: e.x - 8, y: e.y + 20, vx: aimDx, vy: 7 * waveSpeedMult, radius: 5, color: '#ff0055' });
                 this.enemyLasers.push({ x: e.x + 8, y: e.y + 20, vx: aimDx, vy: 9 * waveSpeedMult, radius: 5, color: '#ff0055' });
               }
 
-              if (e.pauseTimer >= 0.55) {
+              if (e.pauseTimer >= 0.6) {
                 e.paused = false;
-                e.speed = 8.5 * waveSpeedMult;
+                e.speed = 6.0 * waveSpeedMult;
               }
             } else {
               e.y += e.speed;
@@ -1733,19 +1906,45 @@
             e.y += e.speed;
           }
 
-          if (e.y > 780 || e.dead) {
+          if (e.y > 780 || e.hp <= 0 || e.dead) {
+            if (e.hp <= 0 && !e.dead) {
+              this.score += e.score || 200;
+              this.waveEnemiesDefeated++;
+              sound.playExplosion(e.type === 'armoredAsteroid');
+              this.createExplosion(e.x, e.y, e.type === 'armoredAsteroid' ? '#ffaa00' : '#ff007f', 18);
+            }
             this.enemies.splice(i, 1);
           }
         }
       }
 
       // ------------------------------------------------------------------------
-      // EXACT DAMAGE RULES (-10 HP ASTEROID, -7 HP PLASMA)
+      // COLLISIONS & EXACT DAMAGE RULES
       // ------------------------------------------------------------------------
       checkCollisions() {
         const p = this.player;
 
-        // A. Player Lasers vs Enemies
+        // A. Player Lasers vs Boss
+        if (this.boss && !this.boss.dead) {
+          const b = this.boss;
+          for (let i = this.lasers.length - 1; i >= 0; i--) {
+            const l = this.lasers[i];
+            if (l.x >= b.x - b.width / 2 && l.x <= b.x + b.width / 2 &&
+                l.y >= b.y - b.height / 2 && l.y <= b.y + b.height / 2) {
+              l.dead = true;
+              b.hp -= (p.overclocked ? 1.5 : 1);
+              sound.playHit();
+              this.createSparks(l.x, l.y, '#ff007f', 6);
+
+              if (b.hp <= 0) {
+                this.destroyBoss();
+              }
+              break;
+            }
+          }
+        }
+
+        // B. Player Lasers vs Enemies & Durable Asteroids (3-5 Hits)
         for (let i = this.lasers.length - 1; i >= 0; i--) {
           const l = this.lasers[i];
 
@@ -1763,14 +1962,18 @@
             if (hit) {
               l.dead = true;
               e.hp -= (p.overclocked ? 1.5 : 1);
+              e.hitFlashTimer = 0.12; // Visual Hit Flash
               sound.playHit();
-              this.createSparks(l.x, l.y, p.overclocked ? '#ffaa00' : '#00f0ff', 6);
 
+              // Visible Surface Impact Sparks
+              this.createSparks(l.x, l.y, e.type === 'armoredAsteroid' ? '#ffaa00' : '#00f0ff', 7);
+
+              // 2-Hit Destruction / Asteroid Destruction Check
               if (e.hp <= 0) {
                 e.dead = true;
-                this.score += e.score;
+                this.score += e.score || 200;
                 this.waveEnemiesDefeated++;
-                sound.playExplosion(e.type === 'spaceMine' || e.type === 'armoredAsteroid');
+                sound.playExplosion(e.type === 'armoredAsteroid' || e.type === 'spaceMine');
 
                 if (e.type === 'spaceMine') {
                   [[-4.5, -4.5], [4.5, -4.5], [-4.5, 4.5], [4.5, 4.5]].forEach(([vx, vy]) => {
@@ -1778,14 +1981,15 @@
                   });
                 }
 
-                this.createExplosion(e.x, e.y, '#ff007f', 18);
+                // Shatter into particles when fully broken
+                this.createExplosion(e.x, e.y, e.type === 'armoredAsteroid' ? '#ffaa00' : '#ff007f', 22);
               }
               break;
             }
           }
         }
 
-        // B. Enemy Lasers vs Player (EXACT -7 HP per plasma hit)
+        // C. Enemy Lasers vs Player (EXACT -7 HP per plasma hit)
         for (let i = this.enemyLasers.length - 1; i >= 0; i--) {
           const el = this.enemyLasers[i];
           if (Math.hypot(el.x - p.x, el.y - p.y) <= 22) {
@@ -1794,7 +1998,7 @@
           }
         }
 
-        // C. Obstacles & Hazards vs Player (EXACT DAMAGE: Asteroid = -10 HP)
+        // D. Direct Collisions: Player vs Enemy Jets & Obstacles
         if (p.invulnerableTimer <= 0) {
           for (let j = 0; j < this.enemies.length; j++) {
             const e = this.enemies[j];
@@ -1803,13 +2007,13 @@
 
             if (e.type === 'laserGate') {
               collided = (Math.abs(p.x - e.x) < e.width / 2 && Math.abs(p.y - e.y) < 18);
-              dmg = 35; // Laser Gate Beam: -35 HP
+              dmg = 35; // Laser Gate: -35 HP
             } else if (e.type === 'spaceMine') {
               collided = Math.hypot(p.x - e.x, p.y - e.y) <= (e.radius + 18);
               dmg = 40; // Space Mine: -40 HP
             } else if (e.type === 'armoredAsteroid') {
               collided = Math.hypot(p.x - e.x, p.y - e.y) <= (e.radius + 18);
-              dmg = 10; // Asteroid collision: -10 HP
+              dmg = 10; // Hitting obstacle/asteroid: -10 HP
             } else {
               collided = (Math.abs(p.x - e.x) < (p.width / 2 + e.width / 2) &&
                           Math.abs(p.y - e.y) < (p.height / 2 + e.height / 2));
@@ -1817,7 +2021,11 @@
             }
 
             if (collided) {
-              if (e.type !== 'laserGate') e.dead = true;
+              // Direct collision destroys regular enemy jet instantly
+              if (e.type !== 'laserGate') {
+                e.dead = true;
+                e.hp = 0;
+              }
               this.createExplosion(p.x, p.y, '#ff007f', 22);
               this.damagePlayer(dmg);
               break;
@@ -1900,6 +2108,14 @@
           shieldBadge.style.display = 'none';
         }
 
+        // BOSS HP BAR HUD UPDATE
+        if (this.boss) {
+          const b = this.boss;
+          const bossPct = Math.max(0, (b.hp / b.maxHp) * 100);
+          document.getElementById('bossHpFill').style.width = `${bossPct}%`;
+          document.getElementById('bossHpTxt').innerText = `${Math.ceil(b.hp)} / ${b.maxHp}`;
+        }
+
         document.getElementById('hudWave').innerText = `WAVE: ${this.wave} / 100`;
         document.getElementById('hudScore').innerText = String(this.score).padStart(6, '0');
         document.getElementById('coinText').innerText = this.coins;
@@ -1928,6 +2144,18 @@
         rc.beginPath();
         rc.arc(px, py, 3.5, 0, Math.PI * 2);
         rc.fill();
+
+        // Render Boss Blip on Radar
+        if (this.boss) {
+          const bx = (this.boss.x / 1280) * rw;
+          const by = ((this.boss.y + 100) / (720 + 100)) * rh;
+          rc.fillStyle = '#ff0055';
+          rc.shadowColor = '#ff0055';
+          rc.shadowBlur = 12;
+          rc.beginPath();
+          rc.arc(bx, by, 7, 0, Math.PI * 2);
+          rc.fill();
+        }
 
         this.enemies.forEach(e => {
           const ex = (e.x / 1280) * rw;
@@ -1959,9 +2187,48 @@
         if (this.state === STATE.PLAYING || this.state === STATE.PAUSED || this.state === STATE.GAMEOVER) {
           this.renderLasers(ctx);
           this.renderEnemies(ctx);
+          if (this.boss) this.renderBoss(ctx);
           this.renderPlayer(ctx);
           this.renderParticles(ctx);
         }
+
+        ctx.restore();
+      }
+
+      renderBoss(ctx) {
+        const b = this.boss;
+        if (!b) return;
+
+        ctx.save();
+        ctx.translate(b.x, b.y);
+
+        ctx.shadowColor = '#ff0055';
+        ctx.shadowBlur = 25;
+        ctx.strokeStyle = '#ff0055';
+        ctx.lineWidth = 3;
+        ctx.fillStyle = 'rgba(25, 10, 30, 0.95)';
+
+        // Heavy Flagship Dreadnought Hull
+        ctx.beginPath();
+        ctx.moveTo(0, 40); // Nose Down
+        ctx.lineTo(-50, 10);
+        ctx.lineTo(-70, -20);
+        ctx.lineTo(-40, -35);
+        ctx.lineTo(0, -20);
+        ctx.lineTo(40, -35);
+        ctx.lineTo(70, -20);
+        ctx.lineTo(50, 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Glowing Boss Plasma Core
+        ctx.beginPath();
+        ctx.arc(0, 0, 14, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffaa00';
+        ctx.shadowColor = '#ffaa00';
+        ctx.shadowBlur = 15;
+        ctx.fill();
 
         ctx.restore();
       }
@@ -2047,7 +2314,7 @@
             ctx.shadowColor = '#ff0055';
             ctx.shadowBlur = 15;
             ctx.strokeStyle = '#ff0055';
-            ctx.fillStyle = 'rgba(255, 0, 85, 0.25)';
+            ctx.fillStyle = e.hitFlashTimer > 0 ? '#ffffff' : 'rgba(255, 0, 85, 0.25)';
             ctx.lineWidth = 2;
 
             ctx.beginPath();
@@ -2062,11 +2329,12 @@
             ctx.fill();
             ctx.stroke();
           } else if (e.type === 'armoredAsteroid') {
+            // DURABLE ASTEROID RENDERING (WITH SURFACE DAMAGE CRACKS)
             ctx.rotate(e.rot || 0);
-            ctx.shadowColor = '#ffaa00';
-            ctx.shadowBlur = 12;
-            ctx.strokeStyle = '#ffaa00';
-            ctx.fillStyle = 'rgba(255, 170, 0, 0.2)';
+            ctx.shadowColor = e.hitFlashTimer > 0 ? '#ffffff' : '#ffaa00';
+            ctx.shadowBlur = 14;
+            ctx.strokeStyle = e.hitFlashTimer > 0 ? '#ffffff' : '#ffaa00';
+            ctx.fillStyle = e.hitFlashTimer > 0 ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 170, 0, 0.25)';
             ctx.lineWidth = 2;
 
             ctx.beginPath();
@@ -2080,11 +2348,24 @@
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
+
+            // Procedural Surface Cracks Overlay on Taking Damage
+            const damageRatio = 1 - (e.hp / e.maxHp);
+            if (damageRatio > 0) {
+              ctx.strokeStyle = '#ff0055';
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.moveTo(-10, -5); ctx.lineTo(4, 8); ctx.lineTo(12, 2);
+              if (damageRatio > 0.4) {
+                ctx.moveTo(-5, 10); ctx.lineTo(8, -12);
+              }
+              ctx.stroke();
+            }
           } else if (e.type === 'weaver' || e.type === 'pincer' || e.type === 'strafer') {
-            ctx.shadowColor = e.type === 'strafer' ? '#ffaa00' : '#ff007f';
+            ctx.shadowColor = e.hitFlashTimer > 0 ? '#ffffff' : (e.type === 'strafer' ? '#ffaa00' : '#ff007f');
             ctx.shadowBlur = 15;
-            ctx.strokeStyle = e.type === 'strafer' ? '#ffaa00' : '#ff007f';
-            ctx.fillStyle = e.type === 'strafer' ? 'rgba(255, 170, 0, 0.25)' : 'rgba(255, 0, 127, 0.25)';
+            ctx.strokeStyle = e.hitFlashTimer > 0 ? '#ffffff' : (e.type === 'strafer' ? '#ffaa00' : '#ff007f');
+            ctx.fillStyle = e.hitFlashTimer > 0 ? 'rgba(255, 255, 255, 0.8)' : (e.type === 'strafer' ? 'rgba(255, 170, 0, 0.25)' : 'rgba(255, 0, 127, 0.25)');
             ctx.lineWidth = 2;
 
             ctx.beginPath();
