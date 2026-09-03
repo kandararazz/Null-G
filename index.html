@@ -1071,33 +1071,62 @@
       }
 
       setupInputListeners() {
-        // Desktop Keyboard Controls
+        // Desktop Keyboard Controls (Strict Whitelist Only)
+        const VALID_CODES = new Set(['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight', 'Space', 'Escape', 'KeyP', 'KeyB', 'KeyR']);
+        const VALID_KEYS = new Set(['a', 'd', 'arrowleft', 'arrowright', ' ', 'escape', 'p', 'b', 'r']);
+
         window.addEventListener('keydown', (e) => {
-          const k = e.key.toLowerCase();
-          this.keys[k] = true;
-          this.keys[e.code] = true;
+          const code = e.code;
+          const key = e.key ? e.key.toLowerCase() : '';
 
-          if (this.state === STATE.PLAYING && (e.code === 'Space' || e.key === ' ')) {
+          // Whitelist check: ignore unassigned keys (Shift, CapsLock, Tab, letters, etc.)
+          if (!VALID_CODES.has(code) && !VALID_KEYS.has(key)) {
+            return;
+          }
+
+          this.keys[code] = true;
+          this.keys[key] = true;
+
+          if (code === 'Space' || key === ' ' || code === 'ArrowLeft' || code === 'ArrowRight') {
             e.preventDefault();
-            this.isFiring = true;
           }
 
-          // Open Power-Up Shop via Keyboard (B or S)
-          if (this.state === STATE.PLAYING && (k === 'b' || k === 's')) {
-            this.openInGameShop();
-          }
-
-          if (this.state === STATE.GAMEOVER && (k === 'r' || e.code === 'Space')) {
-            this.startGame();
+          if (this.state === STATE.PLAYING) {
+            if (code === 'Space' || key === ' ') {
+              this.isFiring = true;
+            }
+            // Explicit Pause Keys Only ('Escape', 'KeyP', 'p')
+            if (code === 'Escape' || code === 'KeyP' || key === 'p' || key === 'escape') {
+              this.togglePause();
+            }
+            // Power-Up Shop Key ('KeyB', 'b')
+            if (code === 'KeyB' || key === 'b') {
+              this.openInGameShop();
+            }
+          } else if (this.state === STATE.PAUSED) {
+            // Escape, P, or B closes pause/shop modal and resumes mission
+            if (code === 'Escape' || code === 'KeyP' || key === 'p' || key === 'escape' || code === 'KeyB' || key === 'b') {
+              this.closeInGameShop();
+            }
+          } else if (this.state === STATE.GAMEOVER) {
+            if (code === 'KeyR' || key === 'r' || code === 'Space' || key === ' ') {
+              this.startGame();
+            }
           }
         });
 
         window.addEventListener('keyup', (e) => {
-          const k = e.key.toLowerCase();
-          this.keys[k] = false;
-          this.keys[e.code] = false;
+          const code = e.code;
+          const key = e.key ? e.key.toLowerCase() : '';
 
-          if (e.code === 'Space' || e.key === ' ') {
+          if (!VALID_CODES.has(code) && !VALID_KEYS.has(key)) {
+            return;
+          }
+
+          this.keys[code] = false;
+          this.keys[key] = false;
+
+          if (code === 'Space' || key === ' ') {
             this.isFiring = false;
           }
         });
@@ -1171,6 +1200,15 @@
         document.getElementById('buyShieldBtn').onclick = () => this.buyShopItem('shield');
         document.getElementById('buyOverclockBtn').onclick = () => this.buyShopItem('overclock');
         document.getElementById('buySmartBombBtn').onclick = () => this.buyShopItem('smartbomb');
+      }
+
+      togglePause() {
+        sound.init();
+        if (this.state === STATE.PLAYING) {
+          this.openInGameShop();
+        } else if (this.state === STATE.PAUSED) {
+          this.closeInGameShop();
+        }
       }
 
       openInGameShop() {
