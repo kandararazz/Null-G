@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Null-G // Cyberpunk Jet Shooter</title>
+  <title>Null-G // Tactical Deep-Space Arcade</title>
   
-  <!-- Google Fonts for Cyberpunk & Arcade Typography -->
+  <!-- Google Fonts for Cyberpunk & Monospace Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
   <!-- Supabase JS Client CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --neon-cyan: #00f0ff;
+      --neon-cyan: #00e5ff;
+      --neon-blue-glow: #0055ff;
       --neon-pink: #ff007f;
       --neon-amber: #ffaa00;
       --neon-green: #00ff66;
@@ -23,11 +24,12 @@
       --neon-gold: #ffd700;
       --neon-silver: #e2e8f0;
       --neon-bronze: #cd7f32;
-      --bg-dark: #020308;
-      --panel-bg: rgba(10, 14, 30, 0.92);
-      --panel-border: rgba(0, 240, 255, 0.4);
+      --bg-dark: #02040a;
+      --panel-bg: rgba(10, 16, 26, 0.85);
+      --panel-border: rgba(0, 229, 255, 0.4);
       --font-title: 'Orbitron', sans-serif;
       --font-ui: 'Rajdhani', sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
     }
 
     * {
@@ -51,6 +53,27 @@
       align-items: center;
     }
 
+    /* CRT Scanline Grid Effect Overlay */
+    .crt-scanline-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+      z-index: 8;
+    }
+
     /* Container for 16:9 Canvas Aspect-Ratio Letterboxing (1280x720) */
     #viewportContainer {
       position: relative;
@@ -64,18 +87,17 @@
 
     canvas#gameCanvas {
       display: block;
-      /* 16:9 Aspect Ratio (1280x720 internal resolution) */
+      /* 16:9 Internal Canvas Aspect Ratio Engine */
       aspect-ratio: 16 / 9;
-      max-width: 100vw;
-      max-height: 100vh;
-      width: auto;
-      height: auto;
+      object-fit: contain;
+      width: 100vw;
+      height: 100vh;
       background: #000;
-      box-shadow: 0 0 40px rgba(0, 240, 255, 0.25);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+      box-shadow: 0 0 50px rgba(0, 229, 255, 0.2);
+      border: 1px solid rgba(0, 229, 255, 0.3);
     }
 
-    /* Mobile Portrait Guard Overlay */
+    /* Orientation Shield (Mobile Portrait Mode Overlay) */
     #portraitGuard {
       display: none;
       position: fixed;
@@ -83,7 +105,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(5, 6, 15, 0.98);
+      background: rgba(2, 4, 10, 0.98);
       z-index: 100;
       flex-direction: column;
       justify-content: center;
@@ -92,19 +114,21 @@
       padding: 24px;
     }
 
-    #portraitGuard .icon {
-      font-size: 56px;
-      margin-bottom: 16px;
-      animation: rotatePhone 2s infinite ease-in-out;
+    #portraitGuard .phone-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      animation: rotatePhone 2.2s infinite ease-in-out;
+      filter: drop-shadow(0 0 15px var(--neon-cyan));
     }
 
     @keyframes rotatePhone {
-      0%, 10% { transform: rotate(0deg); }
-      50%, 60% { transform: rotate(90deg); }
+      0%, 15% { transform: rotate(0deg); }
+      50%, 65% { transform: rotate(90deg); }
       100% { transform: rotate(0deg); }
     }
 
-    @media (max-aspect-ratio: 1/1) {
+    /* Show Orientation Shield only on Portrait Touch Devices */
+    @media (orientation: portrait) {
       #portraitGuard { display: flex; }
     }
 
@@ -132,43 +156,43 @@
       width: 100%;
     }
 
-    /* Left Group: Health Gauge + HUD Buttons */
+    /* Left Group: HP Bar + HUD Home Button */
     .hud-left-group {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 6px;
+      align-items: flex-start;
+      gap: 8px;
     }
 
-    /* Vertical Health Bar & Shield Indicator (Left Edge) */
+    /* Vertical Segmented HP Gauge */
     .vertical-hp-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-      border-radius: 8px;
-      padding: 10px 8px;
-      backdrop-filter: blur(6px);
-      gap: 4px;
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+      border-radius: 6px;
+      padding: 10px 10px;
+      backdrop-filter: blur(8px);
+      gap: 6px;
     }
 
     .hp-title {
-      font-family: var(--font-title);
-      font-size: 10px;
-      letter-spacing: 1px;
-      color: #8a99b5;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--neon-cyan);
       text-align: center;
     }
 
     .hp-bar-bg {
-      width: 16px;
+      width: 18px;
       height: 110px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 4px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(0, 229, 255, 0.3);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -178,7 +202,7 @@
     .hp-bar-fill {
       width: 100%;
       height: 100%;
-      background: linear-gradient(0deg, #00ff66, #00f0ff);
+      background: linear-gradient(0deg, #00ff66, #00e5ff);
       box-shadow: 0 0 10px #00ff66;
       transition: height 0.15s ease-out, background 0.3s ease;
     }
@@ -190,7 +214,7 @@
 
     .hp-bar-fill.danger {
       background: linear-gradient(0deg, #ff0055, #ff007f);
-      box-shadow: 0 0 12px #ff007f;
+      box-shadow: 0 0 14px #ff007f;
       animation: pulseHp 0.4s infinite alternate;
     }
 
@@ -200,7 +224,7 @@
     }
 
     .hp-value {
-      font-family: var(--font-title);
+      font-family: var(--font-mono);
       font-size: 11px;
       color: #fff;
     }
@@ -209,39 +233,40 @@
       font-family: var(--font-title);
       font-size: 10px;
       color: var(--neon-cyan);
-      background: rgba(0, 240, 255, 0.15);
+      background: rgba(0, 229, 255, 0.15);
       border: 1px solid var(--neon-cyan);
       border-radius: 4px;
-      padding: 2px 6px;
+      padding: 3px 8px;
       margin-top: 2px;
       display: none;
-      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
     }
 
-    /* HUD Home & Leaderboard Buttons */
+    /* HUD Home Button */
     .hud-home-btn {
-      font-family: var(--font-title);
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 1px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
       color: var(--neon-cyan);
       background: var(--panel-bg);
-      border: 1px solid var(--neon-cyan);
-      border-radius: 6px;
-      padding: 6px 12px;
+      border: 1px solid var(--panel-border);
+      border-radius: 4px;
+      padding: 8px 14px;
       cursor: pointer;
       pointer-events: auto;
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
-      transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      min-height: 42px;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+      transition: all 0.15s ease;
       white-space: nowrap;
-      width: 100%;
       text-align: center;
     }
 
     .hud-home-btn:hover, .hud-home-btn:active {
-      transform: scale(1.06);
-      background: rgba(0, 240, 255, 0.2);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+      transform: translateY(2px);
+      background: rgba(0, 229, 255, 0.2);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.5);
     }
 
     /* Wave, Score, Coins & Boss HP Bar (Center Top) */
@@ -249,15 +274,15 @@
       text-align: center;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
       border-radius: 8px;
-      padding: 8px 20px;
-      backdrop-filter: blur(6px);
+      padding: 10px 24px;
+      backdrop-filter: blur(8px);
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      min-width: 260px;
+      min-width: 280px;
     }
 
     .wave-badge {
@@ -265,17 +290,17 @@
       font-size: 16px;
       font-weight: 900;
       color: var(--neon-cyan);
-      text-shadow: 0 0 12px var(--neon-cyan);
-      letter-spacing: 2px;
+      text-shadow: 0 0 14px var(--neon-cyan);
+      letter-spacing: 3px;
     }
 
     .score-txt {
-      font-family: var(--font-title);
-      font-size: 22px;
-      font-weight: 900;
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 700;
       color: #fff;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-      letter-spacing: 2px;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+      letter-spacing: 3px;
     }
 
     .hud-center-row {
@@ -285,31 +310,32 @@
     }
 
     .coin-txt {
-      font-family: var(--font-title);
-      font-size: 12px;
+      font-family: var(--font-mono);
+      font-size: 13px;
       color: var(--neon-gold);
       text-shadow: 0 0 8px var(--neon-gold);
+      letter-spacing: 1px;
     }
 
     .hud-shop-btn {
-      font-family: var(--font-title);
+      font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 900;
+      font-weight: 700;
       letter-spacing: 1px;
-      color: #fff;
+      color: #000;
       background: linear-gradient(135deg, var(--neon-gold), #ff8800);
       border: none;
       border-radius: 4px;
-      padding: 4px 10px;
+      padding: 5px 12px;
       cursor: pointer;
       pointer-events: auto;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+      transition: all 0.15s ease;
     }
 
     .hud-shop-btn:hover, .hud-shop-btn:active {
-      transform: scale(1.08);
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+      transform: translateY(2px);
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.8);
     }
 
     /* BOSS HP BAR HUD CONTAINER */
@@ -351,30 +377,30 @@
 
     /* Tactical Mini-Radar (Right Edge) */
     .radar-container {
-      background: rgba(5, 10, 25, 0.85);
+      background: rgba(5, 10, 25, 0.88);
       border: 1px solid var(--neon-cyan);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.3);
       border-radius: 8px;
-      padding: 6px;
-      backdrop-filter: blur(6px);
+      padding: 8px;
+      backdrop-filter: blur(8px);
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     .radar-title {
-      font-family: var(--font-title);
-      font-size: 9px;
+      font-family: var(--font-mono);
+      font-size: 10px;
       color: var(--neon-cyan);
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       margin-bottom: 4px;
     }
 
     #radarCanvas {
       width: 100px;
       height: 140px;
-      background: rgba(0, 0, 0, 0.65);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid rgba(0, 229, 255, 0.3);
       border-radius: 4px;
       display: block;
     }
@@ -415,76 +441,84 @@
       100% { opacity: 1.0; transform: translate(-50%, -50%) scale(1.12); }
     }
 
-    /* Mobile Controls Container (Joystick + Fire Button) */
+    /* Mobile Touch Controls Layer (Virtual Joystick + Fire Trigger) */
     .mobile-controls-layer {
       position: absolute;
-      bottom: 20px;
+      bottom: 24px;
       left: 0;
       width: 100%;
-      padding: 0 24px;
-      display: none; /* Shown dynamically on mobile touch devices */
+      padding: 0 28px;
+      display: none; /* AUTO-DETECTED: Shown ONLY on mobile touch devices */
       justify-content: space-between;
       align-items: flex-end;
       pointer-events: auto;
       z-index: 15;
     }
 
-    /* Virtual Joystick Elements */
+    /* Virtual Analog Thumbstick */
     .joystick-base {
       position: relative;
-      width: 95px;
-      height: 95px;
-      background: rgba(0, 240, 255, 0.15);
+      width: 100px;
+      height: 100px;
+      background: rgba(0, 229, 255, 0.12);
       border: 2px solid var(--neon-cyan);
       border-radius: 50%;
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .joystick-thumb {
-      width: 46px;
-      height: 46px;
-      background: rgba(0, 240, 255, 0.6);
+      width: 48px;
+      height: 48px;
+      background: rgba(0, 229, 255, 0.65);
       border: 2px solid #fff;
       border-radius: 50%;
-      box-shadow: 0 0 15px var(--neon-cyan);
-      transition: transform 0.05s linear;
+      box-shadow: 0 0 18px var(--neon-cyan);
+      transition: transform 0.04s linear;
     }
 
+    /* Large Circular Fire Trigger Button */
     .touch-btn-fire {
-      width: 84px;
-      height: 84px;
+      width: 90px;
+      height: 90px;
+      min-width: 56px;
+      min-height: 56px;
       background: rgba(255, 0, 127, 0.25);
       border: 2px solid var(--neon-pink);
       border-radius: 50%;
       color: var(--neon-pink);
       font-family: var(--font-title);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 900;
+      letter-spacing: 2px;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.5);
       cursor: pointer;
+      touch-action: none;
+      user-select: none;
+      transition: transform 0.05s ease, background 0.05s ease;
     }
 
     .touch-btn-fire:active {
-      background: rgba(255, 0, 127, 0.5);
+      transform: scale(0.95);
+      background: rgba(255, 0, 127, 0.55);
     }
 
     /* Permanent Sci-Fi Creator Branding Footer */
     .creator-branding {
-      font-family: var(--font-title);
-      font-size: 11px;
+      font-family: var(--font-mono);
+      font-size: 12px;
       font-weight: 700;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
       color: var(--neon-cyan);
-      text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 240, 255, 0.5);
+      text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 229, 255, 0.5);
       text-align: center;
       pointer-events: none;
-      margin-top: 10px;
+      margin-top: 14px;
     }
 
     /* Overlay Screen Menus & Modals */
@@ -494,8 +528,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(5, 6, 15, 0.92);
-      backdrop-filter: blur(10px);
+      background: rgba(2, 4, 10, 0.94);
+      backdrop-filter: blur(12px);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -510,63 +544,156 @@
       pointer-events: none;
     }
 
+    /* TITLE SCREEN LOGO & BADGE */
     .title-logo {
       font-family: var(--font-title);
-      font-size: 64px;
+      font-size: 72px;
       font-weight: 900;
-      letter-spacing: 10px;
-      background: linear-gradient(180deg, #ffffff 0%, var(--neon-cyan) 60%, var(--neon-pink) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.8));
+      letter-spacing: 12px;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 30px var(--neon-cyan), 0 0 60px var(--neon-blue-glow);
       margin-bottom: 2px;
       text-align: center;
     }
 
-    .subtitle {
-      font-family: var(--font-title);
-      font-size: 12px;
-      letter-spacing: 4px;
+    .sub-badge {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 6px;
       color: var(--neon-amber);
-      margin-bottom: 20px;
+      margin-bottom: 22px;
       text-transform: uppercase;
       text-align: center;
+      text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
     }
 
     .menu-panel {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.25);
+      box-shadow: 0 0 35px rgba(0, 229, 255, 0.25);
       border-radius: 12px;
-      padding: 24px 28px;
+      padding: 26px 32px;
       width: 90%;
-      max-width: 540px;
+      max-width: 520px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 16px;
     }
 
-    .btn-action {
-      font-family: var(--font-title);
-      font-size: 18px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      padding: 14px 36px;
-      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
-      border: none;
-      border-radius: 25px;
-      color: #fff;
-      cursor: pointer;
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Pilot Identity Input Bar */
+    .pilot-identity-bar {
       width: 100%;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
     }
 
-    .btn-action:hover, .btn-action:active {
-      transform: scale(1.04);
-      box-shadow: 0 0 35px rgba(255, 0, 127, 0.8);
+    .pilot-identity-bar label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--neon-cyan);
+      letter-spacing: 2px;
+    }
+
+    .pilot-identity-input {
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 15px;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      color: var(--neon-cyan);
+      text-align: center;
+      letter-spacing: 2px;
+      outline: none;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .pilot-identity-input:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+    }
+
+    .pilot-identity-input::placeholder {
+      color: rgba(0, 229, 255, 0.4);
+    }
+
+    /* VERTICAL CYBER-STRIP BUTTON DESIGN SYSTEM */
+    .cyber-strip-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .btn-cyber-strip {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      padding: 16px 28px;
+      min-height: 56px;
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      background: rgba(10, 16, 26, 0.85);
+      color: #fff;
+      cursor: pointer;
+      touch-action: none;
+      user-select: none;
+      clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.25);
+      transition: all 0.15s ease;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Primary Launch Button */
+    .btn-cyber-strip.primary-launch {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(0, 85, 255, 0.4));
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.45);
+    }
+
+    .btn-cyber-strip.primary-launch:hover, .btn-cyber-strip.primary-launch:active {
+      transform: translateY(2px);
+      background: var(--neon-cyan);
+      color: #000;
+      box-shadow: 0 0 35px var(--neon-cyan);
+    }
+
+    /* Leaderboard Purple Accent Button */
+    .btn-cyber-strip.purple-accent {
+      border-color: var(--neon-purple);
+      color: var(--neon-purple);
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.25);
+    }
+
+    .btn-cyber-strip.purple-accent:hover, .btn-cyber-strip.purple-accent:active {
+      transform: translateY(2px);
+      background: var(--neon-purple);
+      color: #000;
+      box-shadow: 0 0 30px var(--neon-purple);
+    }
+
+    /* Armory Amber Accent Button */
+    .btn-cyber-strip.amber-accent {
+      border-color: var(--neon-amber);
+      color: var(--neon-amber);
+      box-shadow: 0 0 18px rgba(255, 170, 0, 0.25);
+    }
+
+    .btn-cyber-strip.amber-accent:hover, .btn-cyber-strip.amber-accent:active {
+      transform: translateY(2px);
+      background: var(--neon-amber);
+      color: #000;
+      box-shadow: 0 0 30px var(--neon-amber);
     }
 
     .btn-secondary {
@@ -636,16 +763,16 @@
     }
 
     .shop-item-cost {
-      font-family: var(--font-title);
+      font-family: var(--font-mono);
       font-size: 12px;
       color: var(--neon-gold);
       font-weight: 700;
     }
 
     .btn-buy {
-      font-family: var(--font-title);
+      font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 900;
+      font-weight: 700;
       padding: 6px 14px;
       background: linear-gradient(135deg, var(--neon-gold), #ff8800);
       border: none;
@@ -671,7 +798,7 @@
     .leaderboard-panel {
       background: var(--panel-bg);
       border: 2px solid var(--neon-cyan);
-      box-shadow: 0 0 35px rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 35px rgba(0, 229, 255, 0.35);
       border-radius: 14px;
       padding: 20px 24px;
       width: 92%;
@@ -686,9 +813,9 @@
       width: 100%;
       max-height: 250px;
       overflow-y: auto;
-      border: 1px solid rgba(0, 240, 255, 0.2);
+      border: 1px solid rgba(0, 229, 255, 0.2);
       border-radius: 8px;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
     }
 
     .leaderboard-table {
@@ -700,22 +827,23 @@
     }
 
     .leaderboard-table th {
-      font-family: var(--font-title);
+      font-family: var(--font-mono);
       font-size: 11px;
       color: var(--neon-cyan);
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       padding: 10px 14px;
-      background: rgba(0, 240, 255, 0.1);
-      border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+      background: rgba(0, 229, 255, 0.12);
+      border-bottom: 1px solid rgba(0, 229, 255, 0.3);
       position: sticky;
       top: 0;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
     }
 
     .leaderboard-table td {
       padding: 10px 14px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       color: #e2e8f0;
+      font-family: var(--font-mono);
     }
 
     /* Rank Highlighting Rules */
@@ -750,39 +878,39 @@
 
     .leaderboard-submit-bar input {
       flex: 1;
-      font-family: var(--font-title);
+      font-family: var(--font-mono);
       font-size: 13px;
       padding: 10px 14px;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.7);
       border: 1px solid var(--neon-cyan);
       border-radius: 8px;
       color: var(--neon-cyan);
       outline: none;
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
       letter-spacing: 1px;
     }
 
     .leaderboard-submit-bar input::placeholder {
-      color: rgba(0, 240, 255, 0.5);
+      color: rgba(0, 229, 255, 0.5);
     }
 
     .leaderboard-submit-bar button {
-      font-family: var(--font-title);
+      font-family: var(--font-mono);
       font-size: 12px;
-      font-weight: 900;
+      font-weight: 700;
       padding: 10px 20px;
       background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
       border: none;
       border-radius: 8px;
       color: #fff;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
       transition: transform 0.15s ease, opacity 0.15s ease;
       white-space: nowrap;
     }
 
     .leaderboard-submit-bar button:hover {
-      transform: scale(1.04);
+      transform: translateY(2px);
     }
 
     .leaderboard-submit-bar button:disabled {
@@ -811,7 +939,7 @@
       cursor: pointer;
       z-index: 30;
       pointer-events: auto;
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
     }
 
     /* Red Damage Screen Flash Overlay */
@@ -831,12 +959,15 @@
 </head>
 <body>
 
-  <!-- Mobile Portrait Rotation Guard -->
+  <!-- CRT Scanline Grid Overlay -->
+  <div class="crt-scanline-overlay"></div>
+
+  <!-- Mobile Portrait Orientation Shield -->
   <div id="portraitGuard">
-    <div class="icon">📱🔄</div>
-    <div class="title-logo" style="font-size: 32px;">NULL-G</div>
-    <div style="font-family: var(--font-title); font-size: 14px; color: var(--neon-amber); margin-top: 10px;">
-      PLEASE ROTATE YOUR DEVICE TO LANDSCAPE MODE TO PLAY
+    <div class="phone-icon">📱🔄</div>
+    <div class="title-logo" style="font-size: 36px;">NULL-G</div>
+    <div style="font-family: var(--font-mono); font-size: 14px; color: var(--neon-cyan); margin-top: 12px; letter-spacing: 2px;">
+      ROTATE DEVICE TO LANDSCAPE TO ENGAGE NULL-G
     </div>
   </div>
 
@@ -857,7 +988,7 @@
     <div id="uiOverlay" class="ui-layer">
       <!-- HUD Top Bar -->
       <div class="hud-top">
-        <!-- Left: Health Bar + HUD Buttons -->
+        <!-- Left: Health Bar + HUD Home Button -->
         <div class="hud-left-group">
           <div class="vertical-hp-container">
             <div class="hp-title">HULL HP</div>
@@ -874,10 +1005,10 @@
 
         <!-- Center: Wave, Score, Coins, Shop Button & BOSS HP BAR -->
         <div class="hud-center">
-          <div class="wave-badge" id="hudWave">WAVE: 1 / 100</div>
+          <div class="wave-badge" id="hudWave">WAVE: 01 / 100</div>
           <div class="score-txt" id="hudScore">000000</div>
           <div class="hud-center-row">
-            <div class="coin-txt">⚙ <span id="coinText">0</span> COINS</div>
+            <div class="coin-txt">COINS: <span id="coinText">0000</span></div>
             <button id="hudShopBtn" class="hud-shop-btn">🛒 [ POWER-UP SHOP ]</button>
           </div>
 
@@ -897,14 +1028,14 @@
         </div>
       </div>
 
-      <!-- Mobile Touch Controls Layer (Virtual Joystick + Fire Button) -->
+      <!-- Mobile Touch Controls Layer (Virtual Joystick + Fire Trigger Button) -->
       <div class="mobile-controls-layer" id="mobileControlsLayer">
-        <!-- Virtual Joystick -->
+        <!-- Virtual Analog Thumbstick -->
         <div class="joystick-base" id="joystickBase">
           <div class="joystick-thumb" id="joystickThumb"></div>
         </div>
 
-        <!-- Fire Button -->
+        <!-- Large Fire Trigger Button -->
         <div class="touch-btn-fire" id="btnFire">FIRE</div>
       </div>
     </div>
@@ -912,7 +1043,7 @@
     <!-- GLOBAL LEADERBOARD MODAL (#leaderboardModal) -->
     <div id="leaderboardModal" class="menu-screen hidden">
       <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-cyan));">GLOBAL TOP 10 PILOTS</div>
-      <div class="subtitle">LIVE TELEMETRY RANKINGS</div>
+      <div class="sub-badge">LIVE TELEMETRY RANKINGS</div>
 
       <div class="leaderboard-panel">
         <div class="leaderboard-table-container">
@@ -937,7 +1068,7 @@
           <button id="sendScoreBtn">SUBMIT SCORE</button>
         </div>
 
-        <button id="closeLeaderboardBtn" class="btn-action" style="margin-top: 4px;">CLOSE RANKINGS</button>
+        <button id="closeLeaderboardBtn" class="btn-cyber-strip purple-accent" style="margin-top: 4px; min-height: 44px; font-size: 14px;">[ CLOSE RANKINGS ]</button>
       </div>
 
       <div class="creator-branding">CREATED BY RAZA</div>
@@ -946,7 +1077,7 @@
     <!-- HOME CONFIRMATION MODAL -->
     <div id="homeConfirmModal" class="menu-screen hidden">
       <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-amber));">RETURN TO MAIN MENU?</div>
-      <div class="subtitle">PAUSED — CURRENT MISSION PROGRESS WILL BE RESET</div>
+      <div class="sub-badge">PAUSED — CURRENT MISSION PROGRESS WILL BE RESET</div>
 
       <div class="menu-panel" style="max-width: 440px; text-align: center;">
         <div style="font-size: 13px; color: #a0aec0; line-height: 1.4;">
@@ -954,23 +1085,23 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 8px;">
-          <button id="confirmHomeBtn" class="btn-action">CONFIRM HOME</button>
-          <button id="cancelHomeBtn" class="btn-action btn-secondary">RESUME MISSION</button>
+          <button id="confirmHomeBtn" class="btn-cyber-strip primary-launch">[ CONFIRM HOME ]</button>
+          <button id="cancelHomeBtn" class="btn-cyber-strip btn-secondary" style="min-height: 48px;">RESUME MISSION</button>
         </div>
       </div>
 
       <div class="creator-branding">CREATED BY RAZA</div>
     </div>
 
-    <!-- IN-GAME POWER-UP SHOP MODAL -->
+    <!-- IN-GAME POWER-UP SHOP MODAL (ARMORY) -->
     <div id="inGameShopModal" class="menu-screen hidden">
-      <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-gold));">POWER-UP SHOP</div>
-      <div class="subtitle">PAUSED — UPGRADE YOUR COMBAT SYSTEMS</div>
+      <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-gold));">ARMORY & POWER-UPS</div>
+      <div class="sub-badge">PAUSED — UPGRADE YOUR COMBAT SYSTEMS</div>
 
       <div class="menu-panel" style="max-width: 680px;">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 4px;">
-          <span style="font-family: var(--font-title); font-size: 13px; color: var(--neon-cyan);">TACTICAL ENHANCEMENTS</span>
-          <span style="font-family: var(--font-title); font-size: 14px; color: var(--neon-gold);">⚙ COINS: <span id="inGameShopCoins">0</span></span>
+          <span style="font-family: var(--font-mono); font-size: 13px; color: var(--neon-cyan);">TACTICAL ENHANCEMENTS</span>
+          <span style="font-family: var(--font-mono); font-size: 14px; color: var(--neon-gold);">COINS: <span id="inGameShopCoins">0000</span></span>
         </div>
 
         <div class="shop-items-grid">
@@ -984,7 +1115,7 @@
               </div>
             </div>
             <div class="shop-item-footer">
-              <div class="shop-item-cost">⚙ 150 COINS</div>
+              <div class="shop-item-cost">150 COINS</div>
               <button id="buyNanitesBtn" class="btn-buy">BUY ITEM</button>
             </div>
           </div>
@@ -999,7 +1130,7 @@
               </div>
             </div>
             <div class="shop-item-footer">
-              <div class="shop-item-cost">⚙ 300 COINS</div>
+              <div class="shop-item-cost">300 COINS</div>
               <button id="buyShieldBtn" class="btn-buy">BUY ITEM</button>
             </div>
           </div>
@@ -1014,7 +1145,7 @@
               </div>
             </div>
             <div class="shop-item-footer">
-              <div class="shop-item-cost">⚙ 500 COINS</div>
+              <div class="shop-item-cost">500 COINS</div>
               <button id="buyOverclockBtn" class="btn-buy">BUY ITEM</button>
             </div>
           </div>
@@ -1029,33 +1160,36 @@
               </div>
             </div>
             <div class="shop-item-footer">
-              <div class="shop-item-cost">⚙ 250 COINS</div>
+              <div class="shop-item-cost">250 COINS</div>
               <button id="buySmartBombBtn" class="btn-buy">BUY ITEM</button>
             </div>
           </div>
         </div>
 
-        <button id="closeShopBtn" class="btn-action" style="margin-top: 6px;">RESUME MISSION</button>
+        <button id="closeShopBtn" class="btn-cyber-strip amber-accent" style="margin-top: 6px; min-height: 48px;">[ RESUME MISSION ]</button>
       </div>
 
       <div class="creator-branding">CREATED BY RAZA</div>
     </div>
 
-    <!-- START SCREEN OVERLAY (MAIN MENU) -->
+    <!-- START SCREEN OVERLAY (TITLE / HOME PAGE) -->
     <div id="startScreen" class="menu-screen">
       <div class="title-logo">NULL-G</div>
-      <div class="subtitle">100-WAVE ACCELERATING JET SHOOTER</div>
+      <div class="sub-badge">TACTICAL DEEP-SPACE ARCADE</div>
 
       <div class="menu-panel">
-        <div style="font-family: var(--font-title); font-size: 14px; color: var(--neon-cyan); letter-spacing: 2px; text-align: center;">
-          PILOT READY FOR DEPLOYMENT
-        </div>
-        <div style="font-size: 13px; color: #a0aec0; text-align: center; line-height: 1.4;">
-          Survive 100 accelerating waves & recurring Boss Battles every 10 waves! Moderate enemy descent (3-3.5px), 2-hit enemy destruction, and durable cracked asteroids.
+        <!-- Pilot Identity Bar -->
+        <div class="pilot-identity-bar">
+          <label for="homePilotCallsign">PILOT IDENTITY TELEMETRY</label>
+          <input type="text" id="homePilotCallsign" class="pilot-identity-input" placeholder="CALLSIGN: RAZA" maxlength="12" />
         </div>
 
-        <button id="startBtn" class="btn-action">START GAME</button>
-        <button id="menuLeaderboardBtn" class="btn-action btn-secondary">🏆 GLOBAL TOP 10</button>
+        <!-- Vertical Cyber-Strip Action Buttons -->
+        <div class="cyber-strip-group">
+          <button id="startBtn" class="btn-cyber-strip primary-launch">[ LAUNCH MISSION ]</button>
+          <button id="menuLeaderboardBtn" class="btn-cyber-strip purple-accent">[ LEADERBOARD ]</button>
+          <button id="menuArmoryBtn" class="btn-cyber-strip amber-accent">[ ARMORY / POWER-UPS ]</button>
+        </div>
       </div>
 
       <!-- Permanent Creator Branding Footer -->
@@ -1065,25 +1199,25 @@
     <!-- GAME OVER SCREEN OVERLAY -->
     <div id="gameOverScreen" class="menu-screen hidden">
       <div class="title-logo" style="font-size: 52px; filter: drop-shadow(0 0 25px var(--neon-pink));">GAME OVER</div>
-      <div class="subtitle" style="color: var(--neon-pink);">HULL DESTROYED</div>
+      <div class="sub-badge" style="color: var(--neon-pink);">HULL DESTROYED</div>
 
       <div class="menu-panel" style="text-align: center; max-width: 460px;">
-        <div style="font-size: 12px; color: #8a99b5; font-family: var(--font-title);">FINAL SCORE</div>
+        <div style="font-size: 12px; color: #8a99b5; font-family: var(--font-mono);">FINAL SCORE</div>
         <div class="score-txt" id="goScore" style="font-size: 36px; color: var(--neon-cyan); margin: 4px 0;">0</div>
 
-        <div style="font-size: 13px; color: var(--neon-amber); margin-bottom: 4px;">
-          WAVE REACHED: <span id="goWave">1 / 100</span>
+        <div style="font-size: 13px; color: var(--neon-amber); font-family: var(--font-mono); margin-bottom: 4px;">
+          WAVE REACHED: <span id="goWave">01 / 100</span>
         </div>
 
-        <!-- Score Submission Bar on Death Screen (Dual Aliases for pilotCallsign & submitScoreBtn) -->
+        <!-- Score Submission Bar on Death Screen -->
         <div class="leaderboard-submit-bar" style="margin: 8px 0;">
           <input type="text" id="pilotCallsign" placeholder="ENTER CALLSIGN" maxlength="12" />
           <button id="submitScoreBtn">SUBMIT SCORE</button>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-          <button id="retryBtn" class="btn-action">RETRY MISSION</button>
-          <button id="homeGoBtn" class="btn-action btn-secondary">BACK TO HOME</button>
+        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+          <button id="retryBtn" class="btn-cyber-strip primary-launch">[ RETRY MISSION ]</button>
+          <button id="homeGoBtn" class="btn-cyber-strip btn-secondary" style="min-height: 48px;">[ BACK TO HOME ]</button>
         </div>
       </div>
 
@@ -1105,7 +1239,6 @@
     const SUPABASE_URL = window.SUPABASE_URL || localStorage.getItem('nullg_supabase_url') || 'https://xyzcompany.supabase.co';
     const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || localStorage.getItem('nullg_supabase_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
 
-    // Both `supabase` and `supabaseClient` bound globally for exact user spec compatibility
     let supabase = null;
     let supabaseClient = null;
 
@@ -1142,7 +1275,6 @@
       return top10;
     }
 
-    // Exact renderLeaderboard() implementation matching user spec
     async function renderLeaderboard() {
       const tableBody = document.getElementById('leaderboardBody');
       if (!tableBody) return;
@@ -1362,8 +1494,8 @@
       }
 
       getTheme(wave) {
-        if (wave <= 10) return { name: 'DEEP SPACE NAVY', bg1: '#050b1a', bg2: '#02040a', starColor: '#00f0ff' };
-        if (wave <= 20) return { name: 'CYBER-GRID CYAN', bg1: '#001a24', bg2: '#000810', starColor: '#00f0ff' };
+        if (wave <= 10) return { name: 'DEEP SPACE NAVY', bg1: '#050b1a', bg2: '#02040a', starColor: '#00e5ff' };
+        if (wave <= 20) return { name: 'CYBER-GRID CYAN', bg1: '#001a24', bg2: '#000810', starColor: '#00e5ff' };
         if (wave <= 30) return { name: 'VIOLET NEBULA DUST', bg1: '#18052e', bg2: '#080112', starColor: '#a855f7' };
         if (wave <= 40) return { name: 'SOLAR CRIMSON CLUSTER', bg1: '#2e0a05', bg2: '#120201', starColor: '#ffaa00' };
         if (wave <= 50) return { name: 'TOXIC EMERALD AURORA', bg1: '#052e14', bg2: '#011206', starColor: '#00ff66' };
@@ -1422,8 +1554,9 @@
         this.background = new DynamicBackground(this.canvas);
 
         this.coins = parseInt(localStorage.getItem('nullg_coins') || '0');
-        this.savedPilotName = localStorage.getItem('nullg_pilot_name') || '';
+        this.savedPilotName = localStorage.getItem('nullg_pilot_name') || 'RAZA';
 
+        // AUTO-DETECTION CONTROL ARCHITECTURE: Touch Device Detection
         this.isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         if (this.isTouchDevice) {
           document.getElementById('mobileControlsLayer').style.display = 'flex';
@@ -1433,15 +1566,34 @@
         this.isFiring = false;
         this.joystickDx = 0;
         this.boss = null;
+        this.radarSweepAngle = 0;
 
         this.setupInputListeners();
         this.setupInGameShopUI();
         this.setupHomeConfirmUI();
         this.setupLeaderboardUI();
+        this.setupPilotIdentityBar();
         this.resetGame();
 
         this.lastTime = performance.now();
         requestAnimationFrame((t) => this.loop(t));
+      }
+
+      setupPilotIdentityBar() {
+        const homeInput = document.getElementById('homePilotCallsign');
+        if (homeInput) {
+          homeInput.value = this.savedPilotName;
+          homeInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim().toUpperCase();
+            this.savedPilotName = val || 'RAZA';
+            localStorage.setItem('nullg_pilot_name', this.savedPilotName);
+
+            const lbInput = document.getElementById('leaderboardNameInput');
+            const psInput = document.getElementById('pilotCallsign');
+            if (lbInput) lbInput.value = this.savedPilotName;
+            if (psInput) psInput.value = this.savedPilotName;
+          });
+        }
       }
 
       setupInputListeners() {
@@ -1449,7 +1601,7 @@
         const VALID_KEYS = new Set(['a', 'd', 'arrowleft', 'arrowright', ' ', 'escape', 'p', 'b', 'r']);
 
         window.addEventListener('keydown', (e) => {
-          if (document.activeElement && (document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'pilotCallsign')) {
+          if (document.activeElement && (document.activeElement.id === 'homePilotCallsign' || document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'pilotCallsign')) {
             return;
           }
 
@@ -1491,7 +1643,7 @@
         });
 
         window.addEventListener('keyup', (e) => {
-          if (document.activeElement && (document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'pilotCallsign')) {
+          if (document.activeElement && (document.activeElement.id === 'homePilotCallsign' || document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'pilotCallsign')) {
             return;
           }
 
@@ -1510,18 +1662,22 @@
           }
         });
 
-        this.canvas.addEventListener('mousedown', () => {
-          sound.init();
-          if (this.state === STATE.PLAYING) {
-            this.isFiring = true;
+        // Desktop Mouse Click Laser Firing
+        this.canvas.addEventListener('mousedown', (e) => {
+          if (e.button === 0) { // Left Mouse Click
+            sound.init();
+            if (this.state === STATE.PLAYING) {
+              this.isFiring = true;
+            }
           }
         });
         window.addEventListener('mouseup', () => { this.isFiring = false; });
 
+        // Mobile Touch Joystick Controls
         const base = document.getElementById('joystickBase');
         const thumb = document.getElementById('joystickThumb');
 
-        const handleJoystick = (touchX, touchY) => {
+        const handleJoystick = (touchX) => {
           const rect = base.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
           const deltaX = touchX - centerX;
@@ -1540,16 +1696,17 @@
 
         base.addEventListener('touchstart', (e) => {
           e.preventDefault(); sound.init();
-          if (e.touches.length > 0) handleJoystick(e.touches[0].clientX, e.touches[0].clientY);
+          if (e.touches.length > 0) handleJoystick(e.touches[0].clientX);
         }, { passive: false });
 
         base.addEventListener('touchmove', (e) => {
           e.preventDefault();
-          if (e.touches.length > 0) handleJoystick(e.touches[0].clientX, e.touches[0].clientY);
+          if (e.touches.length > 0) handleJoystick(e.touches[0].clientX);
         }, { passive: false });
 
         base.addEventListener('touchend', (e) => { e.preventDefault(); resetJoystick(); }, { passive: false });
 
+        // Mobile Fire Trigger Button
         const fireBtn = document.getElementById('btnFire');
         fireBtn.addEventListener('touchstart', (e) => {
           e.preventDefault(); sound.init(); this.isFiring = true;
@@ -1560,6 +1717,7 @@
         document.getElementById('retryBtn').addEventListener('click', () => { sound.init(); this.startGame(); });
         document.getElementById('homeGoBtn').addEventListener('click', () => { sound.init(); this.showMenu(); });
         document.getElementById('hudShopBtn').addEventListener('click', () => { sound.init(); this.openInGameShop(); });
+        document.getElementById('menuArmoryBtn').addEventListener('click', () => { sound.init(); this.openInGameShop(); });
         document.getElementById('closeShopBtn').addEventListener('click', () => { sound.init(); this.closeInGameShop(); });
         document.getElementById('hudHomeBtn').addEventListener('click', () => { sound.init(); this.openHomeConfirmModal(); });
 
@@ -1594,9 +1752,6 @@
         document.getElementById('homeConfirmModal').classList.add('hidden');
       }
 
-      // ------------------------------------------------------------------------
-      // SUPABASE LEADERBOARD INTEGRATION & EVENT LISTENERS
-      // ------------------------------------------------------------------------
       setupLeaderboardUI() {
         const nameInput = document.getElementById('leaderboardNameInput');
         const callsignInput = document.getElementById('pilotCallsign');
@@ -1628,13 +1783,15 @@
       async sendScore(btnId, inputEl) {
         sound.init();
         const btn = document.getElementById(btnId);
-        const enteredName = (inputEl && inputEl.value ? inputEl.value.trim().toUpperCase() : '') || this.savedPilotName || 'UNKNOWN PILOT';
+        const enteredName = (inputEl && inputEl.value ? inputEl.value.trim().toUpperCase() : '') || this.savedPilotName || 'RAZA';
 
         this.savedPilotName = enteredName;
         localStorage.setItem('nullg_pilot_name', enteredName);
 
+        const homeInput = document.getElementById('homePilotCallsign');
         const nameInput = document.getElementById('leaderboardNameInput');
         const callsignInput = document.getElementById('pilotCallsign');
+        if (homeInput) homeInput.value = enteredName;
         if (nameInput) nameInput.value = enteredName;
         if (callsignInput) callsignInput.value = enteredName;
 
@@ -1675,17 +1832,16 @@
       }
 
       openInGameShop() {
-        if (this.state !== STATE.PLAYING) return;
-        this.state = STATE.PAUSED;
+        if (this.state !== STATE.PLAYING && this.state !== STATE.MENU) return;
+        if (this.state === STATE.PLAYING) this.state = STATE.PAUSED;
         this.updateShopButtons();
-        document.getElementById('inGameShopCoins').innerText = this.coins;
+        document.getElementById('inGameShopCoins').innerText = String(this.coins).padStart(4, '0');
         document.getElementById('inGameShopModal').classList.remove('hidden');
       }
 
       closeInGameShop() {
-        if (this.state !== STATE.PAUSED) return;
-        this.state = STATE.PLAYING;
         document.getElementById('inGameShopModal').classList.add('hidden');
+        if (this.state === STATE.PAUSED) this.state = STATE.PLAYING;
       }
 
       togglePause() {
@@ -1700,7 +1856,7 @@
       }
 
       updateShopButtons() {
-        document.getElementById('inGameShopCoins').innerText = this.coins;
+        document.getElementById('inGameShopCoins').innerText = String(this.coins).padStart(4, '0');
         document.getElementById('buyNanitesBtn').disabled = this.coins < 150 || this.player.hp >= 100;
         document.getElementById('buyShieldBtn').disabled = this.coins < 300;
         document.getElementById('buyOverclockBtn').disabled = this.coins < 500 || this.player.overclocked;
@@ -1718,7 +1874,7 @@
           this.coins -= 300;
           this.player.shieldHits = 3;
           sound.playPowerup();
-          this.createSparks(this.player.x, this.player.y, '#00f0ff', 20);
+          this.createSparks(this.player.x, this.player.y, '#00e5ff', 20);
         } else if (type === 'overclock' && this.coins >= 500 && !this.player.overclocked) {
           this.coins -= 500;
           this.player.overclocked = true;
@@ -1738,7 +1894,7 @@
         this.screenShake = 25;
         this.enemies.forEach(e => {
           this.score += e.score || 150;
-          this.createExplosion(e.x, e.y, '#00f0ff', 25);
+          this.createExplosion(e.x, e.y, '#00e5ff', 25);
         });
         this.waveEnemiesDefeated += this.enemies.length;
         this.enemies = [];
@@ -1753,7 +1909,7 @@
           this.particles.push({
             x: 640, y: 360,
             vx: Math.cos(a) * 16, vy: Math.sin(a) * 16,
-            radius: 6, color: '#00f0ff', alpha: 1.0, decay: 0.03
+            radius: 6, color: '#00e5ff', alpha: 1.0, decay: 0.03
           });
         }
       }
@@ -1833,7 +1989,7 @@
           banner.innerText = `⚠️ BOSS WARNING ⚠️\nDREADNOUGHT INCOMING!`;
           banner.classList.add('boss-warning');
         } else {
-          banner.innerText = `WAVE ${waveNum} INCOMING!`;
+          banner.innerText = `WAVE ${String(waveNum).padStart(2, '0')} INCOMING!`;
           banner.classList.remove('boss-warning');
         }
         banner.classList.add('show');
@@ -1875,7 +2031,7 @@
 
         this.createExplosion(this.boss.x, this.boss.y, '#ff007f', 40);
         this.createExplosion(this.boss.x - 40, this.boss.y, '#ffaa00', 30);
-        this.createExplosion(this.boss.x + 40, this.boss.y, '#00f0ff', 30);
+        this.createExplosion(this.boss.x + 40, this.boss.y, '#00e5ff', 30);
 
         this.score += 2500;
         this.coins += 500;
@@ -1892,7 +2048,7 @@
         this.state = STATE.GAMEOVER;
         sound.playExplosion(true);
         document.getElementById('goScore').innerText = Number(this.score).toLocaleString();
-        document.getElementById('goWave').innerText = `${this.wave} / 100`;
+        document.getElementById('goWave').innerText = `${String(this.wave).padStart(2, '0')} / 100`;
         document.getElementById('gameOverScreen').classList.remove('hidden');
       }
 
@@ -1947,7 +2103,7 @@
               vx: -p.vx * 0.2 + (Math.random() - 0.5),
               vy: Math.random() * 6 + 4,
               radius: Math.random() * 3 + 1,
-              color: p.shieldHits > 0 ? '#00f0ff' : '#00ff66',
+              color: p.shieldHits > 0 ? '#00e5ff' : '#00ff66',
               alpha: 0.9,
               decay: 0.08
             });
@@ -2050,7 +2206,7 @@
         sound.playLaser();
         const p = this.player;
         const laserWidth = p.overclocked ? 9 : 5;
-        const laserColor = p.overclocked ? '#ffaa00' : '#00f0ff';
+        const laserColor = p.overclocked ? '#ffaa00' : '#00e5ff';
 
         if (p.overclocked) {
           [-24, -10, 10, 24].forEach(ox => {
@@ -2280,7 +2436,7 @@
               e.hitFlashTimer = 0.12;
               sound.playHit();
 
-              this.createSparks(l.x, l.y, e.type === 'armoredAsteroid' ? '#ffaa00' : '#00f0ff', 7);
+              this.createSparks(l.x, l.y, e.type === 'armoredAsteroid' ? '#ffaa00' : '#00e5ff', 7);
 
               if (e.hp <= 0) {
                 e.dead = true;
@@ -2350,7 +2506,7 @@
         if (p.shieldHits > 0) {
           p.shieldHits--;
           sound.playShieldHit();
-          this.createSparks(p.x, p.y, '#00f0ff', 15);
+          this.createSparks(p.x, p.y, '#00e5ff', 15);
           p.invulnerableTimer = 0.6;
           this.updateHUD();
           return;
@@ -2367,7 +2523,7 @@
 
         if (p.hp <= 0) {
           p.hp = 0;
-          this.createExplosion(p.x, p.y, '#00f0ff', 40);
+          this.createExplosion(p.x, p.y, '#00e5ff', 40);
           this.gameOver();
         }
 
@@ -2424,9 +2580,9 @@
           document.getElementById('bossHpTxt').innerText = `${Math.ceil(b.hp)} / ${b.maxHp}`;
         }
 
-        document.getElementById('hudWave').innerText = `WAVE: ${this.wave} / 100`;
+        document.getElementById('hudWave').innerText = `WAVE: ${String(this.wave).padStart(2, '0')} / 100`;
         document.getElementById('hudScore').innerText = String(this.score).padStart(6, '0');
-        document.getElementById('coinText').innerText = this.coins;
+        document.getElementById('coinText').innerText = String(this.coins).padStart(4, '0');
       }
 
       updateTacticalRadar() {
@@ -2436,23 +2592,38 @@
 
         rc.clearRect(0, 0, rw, rh);
 
-        rc.strokeStyle = 'rgba(0, 240, 255, 0.2)';
+        // Circular Radar Grid Lines
+        rc.strokeStyle = 'rgba(0, 229, 255, 0.2)';
         rc.lineWidth = 1;
         rc.beginPath();
         rc.moveTo(0, rh / 2); rc.lineTo(rw, rh / 2);
         rc.moveTo(rw / 2, 0); rc.lineTo(rw / 2, rh);
         rc.stroke();
 
+        // Radar Sweep Line Beam Animation
+        this.radarSweepAngle += 0.04;
+        rc.save();
+        rc.translate(rw / 2, rh / 2);
+        rc.strokeStyle = 'rgba(0, 229, 255, 0.4)';
+        rc.lineWidth = 1.5;
+        rc.beginPath();
+        rc.moveTo(0, 0);
+        rc.lineTo(Math.cos(this.radarSweepAngle) * 60, Math.sin(this.radarSweepAngle) * 60);
+        rc.stroke();
+        rc.restore();
+
+        // Player Position Blip
         const px = (this.player.x / 1280) * rw;
         const py = (this.player.y / 720) * rh;
 
-        rc.fillStyle = this.player.shieldHits > 0 ? '#00f0ff' : '#00ff66';
+        rc.fillStyle = this.player.shieldHits > 0 ? '#00e5ff' : '#00ff66';
         rc.shadowColor = rc.fillStyle;
         rc.shadowBlur = 8;
         rc.beginPath();
         rc.arc(px, py, 3.5, 0, Math.PI * 2);
         rc.fill();
 
+        // Boss Position Blip
         if (this.boss) {
           const bx = (this.boss.x / 1280) * rw;
           const by = ((this.boss.y + 100) / (720 + 100)) * rh;
@@ -2464,6 +2635,7 @@
           rc.fill();
         }
 
+        // Enemy Position Blips
         this.enemies.forEach(e => {
           const ex = (e.x / 1280) * rw;
           const ey = ((e.y + 400) / (720 + 400)) * rh;
@@ -2555,18 +2727,18 @@
           ctx.save();
           ctx.beginPath();
           ctx.arc(0, 0, 36, 0, Math.PI * 2);
-          ctx.strokeStyle = '#00f0ff';
-          ctx.shadowColor = '#00f0ff';
+          ctx.strokeStyle = '#00e5ff';
+          ctx.shadowColor = '#00e5ff';
           ctx.shadowBlur = 18;
           ctx.lineWidth = 3;
-          ctx.fillStyle = 'rgba(0, 240, 255, 0.12)';
+          ctx.fillStyle = 'rgba(0, 229, 255, 0.12)';
           ctx.fill();
           ctx.stroke();
           ctx.restore();
         }
 
-        ctx.strokeStyle = p.overclocked ? '#ffaa00' : '#00f0ff';
-        ctx.shadowColor = p.overclocked ? '#ffaa00' : '#00f0ff';
+        ctx.strokeStyle = p.overclocked ? '#ffaa00' : '#00e5ff';
+        ctx.shadowColor = p.overclocked ? '#ffaa00' : '#00e5ff';
         ctx.shadowBlur = 14;
         ctx.lineWidth = 2;
         ctx.fillStyle = 'rgba(10, 16, 35, 0.95)';
@@ -2586,7 +2758,7 @@
 
         ctx.beginPath();
         ctx.arc(0, -6, 4, 0, Math.PI * 2);
-        ctx.fillStyle = p.overclocked ? '#ffaa00' : '#00f0ff';
+        ctx.fillStyle = p.overclocked ? '#ffaa00' : '#00e5ff';
         ctx.fill();
 
         ctx.restore();
@@ -2598,9 +2770,9 @@
           ctx.translate(e.x, e.y);
 
           if (e.type === 'laserGate') {
-            ctx.shadowColor = '#00f0ff';
+            ctx.shadowColor = '#00e5ff';
             ctx.shadowBlur = 20;
-            ctx.strokeStyle = '#00f0ff';
+            ctx.strokeStyle = '#00e5ff';
             ctx.lineWidth = 4;
 
             ctx.beginPath();
