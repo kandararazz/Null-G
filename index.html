@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 
+  <!-- Supabase JS Client CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root {
       --neon-cyan: #00f0ff;
@@ -18,6 +21,8 @@
       --neon-green: #00ff66;
       --neon-purple: #a855f7;
       --neon-gold: #ffd700;
+      --neon-silver: #e2e8f0;
+      --neon-bronze: #cd7f32;
       --bg-dark: #020308;
       --panel-bg: rgba(10, 14, 30, 0.92);
       --panel-border: rgba(0, 240, 255, 0.4);
@@ -127,7 +132,7 @@
       width: 100%;
     }
 
-    /* Left Group: Health Gauge + HUD Home Button */
+    /* Left Group: Health Gauge + HUD Buttons */
     .hud-left-group {
       display: flex;
       flex-direction: column;
@@ -213,7 +218,7 @@
       box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
     }
 
-    /* HUD Home Button */
+    /* HUD Home & Leaderboard Buttons */
     .hud-home-btn {
       font-family: var(--font-title);
       font-size: 11px;
@@ -229,6 +234,8 @@
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
       transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
       white-space: nowrap;
+      width: 100%;
+      text-align: center;
     }
 
     .hud-home-btn:hover, .hud-home-btn:active {
@@ -533,7 +540,7 @@
       border-radius: 12px;
       padding: 24px 28px;
       width: 90%;
-      max-width: 520px;
+      max-width: 540px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -660,6 +667,132 @@
       box-shadow: none;
     }
 
+    /* GLOBAL LEADERBOARD MODAL STYLES (#leaderboardModal) */
+    .leaderboard-panel {
+      background: var(--panel-bg);
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.35);
+      border-radius: 14px;
+      padding: 20px 24px;
+      width: 92%;
+      max-width: 640px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .leaderboard-table-container {
+      width: 100%;
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-family: var(--font-ui);
+      font-size: 14px;
+    }
+
+    .leaderboard-table th {
+      font-family: var(--font-title);
+      font-size: 11px;
+      color: var(--neon-cyan);
+      letter-spacing: 1px;
+      padding: 10px 14px;
+      background: rgba(0, 240, 255, 0.1);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(4px);
+    }
+
+    .leaderboard-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+    }
+
+    /* Rank Highlighting Rules */
+    .rank-gold td {
+      color: var(--neon-gold) !important;
+      font-weight: 700;
+      text-shadow: 0 0 10px var(--neon-gold);
+      background: rgba(255, 215, 0, 0.08);
+    }
+
+    .rank-silver td {
+      color: var(--neon-silver) !important;
+      font-weight: 700;
+      text-shadow: 0 0 10px var(--neon-silver);
+      background: rgba(226, 232, 240, 0.06);
+    }
+
+    .rank-bronze td {
+      color: var(--neon-bronze) !important;
+      font-weight: 700;
+      text-shadow: 0 0 10px var(--neon-bronze);
+      background: rgba(205, 127, 50, 0.06);
+    }
+
+    /* Submission Bar Container */
+    .leaderboard-submit-bar {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .leaderboard-submit-bar input {
+      flex: 1;
+      font-family: var(--font-title);
+      font-size: 13px;
+      padding: 10px 14px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 8px;
+      color: var(--neon-cyan);
+      outline: none;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+      letter-spacing: 1px;
+    }
+
+    .leaderboard-submit-bar input::placeholder {
+      color: rgba(0, 240, 255, 0.5);
+    }
+
+    .leaderboard-submit-bar button {
+      font-family: var(--font-title);
+      font-size: 12px;
+      font-weight: 900;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .leaderboard-submit-bar button:hover {
+      transform: scale(1.04);
+    }
+
+    .leaderboard-submit-bar button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      background: #4a5568;
+      box-shadow: none;
+    }
+
     /* Sound Mute Button */
     .icon-btn {
       position: absolute;
@@ -724,7 +857,7 @@
     <div id="uiOverlay" class="ui-layer">
       <!-- HUD Top Bar -->
       <div class="hud-top">
-        <!-- Left: Health Bar + HUD Home Button -->
+        <!-- Left: Health Bar + HUD Buttons -->
         <div class="hud-left-group">
           <div class="vertical-hp-container">
             <div class="hp-title">HULL HP</div>
@@ -734,8 +867,9 @@
             <div class="hp-value" id="hpValue">HP: 100%</div>
             <div id="shieldBadge" class="shield-hud-badge">🛡️ 3 HITS</div>
           </div>
-          <!-- HUD HOME BUTTON -->
+          <!-- HUD BUTTONS -->
           <button id="hudHomeBtn" class="hud-home-btn">⌂ HOME</button>
+          <button id="hudRankBtn" class="hud-home-btn" style="border-color: var(--neon-gold); color: var(--neon-gold);">🏆 TOP 10</button>
         </div>
 
         <!-- Center: Wave, Score, Coins, Shop Button & BOSS HP BAR -->
@@ -773,6 +907,40 @@
         <!-- Fire Button -->
         <div class="touch-btn-fire" id="btnFire">FIRE</div>
       </div>
+    </div>
+
+    <!-- GLOBAL LEADERBOARD MODAL (#leaderboardModal) -->
+    <div id="leaderboardModal" class="menu-screen hidden">
+      <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-cyan));">GLOBAL TOP 10 PILOTS</div>
+      <div class="subtitle">LIVE TELEMETRY RANKINGS</div>
+
+      <div class="leaderboard-panel">
+        <div class="leaderboard-table-container">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>RANK</th>
+                <th>PILOT</th>
+                <th>WAVE</th>
+                <th>SCORE</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+              <tr><td colspan="4" style="text-align: center;">FETCHING TELEMETRY...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Submission Bar Inside Modal -->
+        <div class="leaderboard-submit-bar">
+          <input type="text" id="leaderboardNameInput" placeholder="TYPE YOUR NAME" maxlength="12" />
+          <button id="sendScoreBtn">SUBMIT SCORE</button>
+        </div>
+
+        <button id="closeLeaderboardBtn" class="btn-action" style="margin-top: 4px;">CLOSE RANKINGS</button>
+      </div>
+
+      <div class="creator-branding">CREATED BY RAZA</div>
     </div>
 
     <!-- HOME CONFIRMATION MODAL -->
@@ -887,6 +1055,7 @@
         </div>
 
         <button id="startBtn" class="btn-action">START GAME</button>
+        <button id="menuLeaderboardBtn" class="btn-action btn-secondary">🏆 GLOBAL TOP 10</button>
       </div>
 
       <!-- Permanent Creator Branding Footer -->
@@ -898,15 +1067,21 @@
       <div class="title-logo" style="font-size: 52px; filter: drop-shadow(0 0 25px var(--neon-pink));">GAME OVER</div>
       <div class="subtitle" style="color: var(--neon-pink);">HULL DESTROYED</div>
 
-      <div class="menu-panel" style="text-align: center; max-width: 440px;">
+      <div class="menu-panel" style="text-align: center; max-width: 460px;">
         <div style="font-size: 12px; color: #8a99b5; font-family: var(--font-title);">FINAL SCORE</div>
         <div class="score-txt" id="goScore" style="font-size: 36px; color: var(--neon-cyan); margin: 4px 0;">0</div>
 
-        <div style="font-size: 13px; color: var(--neon-amber); margin-bottom: 8px;">
+        <div style="font-size: 13px; color: var(--neon-amber); margin-bottom: 4px;">
           WAVE REACHED: <span id="goWave">1 / 100</span>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+        <!-- Score Submission Bar on Death Screen -->
+        <div class="leaderboard-submit-bar" style="margin: 8px 0;">
+          <input type="text" id="goNameInput" placeholder="TYPE YOUR NAME" maxlength="12" />
+          <button id="goSendScoreBtn">SUBMIT SCORE</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
           <button id="retryBtn" class="btn-action">RETRY MISSION</button>
           <button id="homeGoBtn" class="btn-action btn-secondary">BACK TO HOME</button>
         </div>
@@ -920,9 +1095,48 @@
   <!-- GAME ENGINE SCRIPT -->
   <script>
     /* ==========================================================================
-       NULL-G: ACCELERATING WAVES, RECURRING BOSSES & DURABLE OBSTACLES
+       NULL-G: ACCELERATING WAVES, RECURRING BOSSES & SUPABASE LEADERBOARD
        CREATED BY RAZA
        ========================================================================== */
+
+    // --------------------------------------------------------------------------
+    // 0. SUPABASE CLIENT & LEADERBOARD SYSTEM (WITH LOCAL OFFLINE FALLBACK)
+    // --------------------------------------------------------------------------
+    const SUPABASE_URL = 'https://xyzcompany.supabase.co'; // Placeholder / Connected URL
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Placeholder / Connected Key
+
+    let supabaseClient = null;
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+      try {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      } catch (e) {
+        console.warn('Supabase initialization fallback to offline storage mode.');
+      }
+    }
+
+    // Local High Score Array Fallback
+    function getLocalLeaderboard() {
+      const stored = localStorage.getItem('nullg_local_leaderboard');
+      if (stored) {
+        try { return JSON.parse(stored); } catch (e) {}
+      }
+      return [
+        { player_name: 'RAZA_ACE', wave_reached: 100, score: 98500 },
+        { player_name: 'VOID_VIPER', wave_reached: 78, score: 72400 },
+        { player_name: 'CYBER_HAWK', wave_reached: 54, score: 48900 },
+        { player_name: 'NEBULA_PILOT', wave_reached: 32, score: 29100 },
+        { player_name: 'STRIKER_X', wave_reached: 18, score: 14200 }
+      ];
+    }
+
+    function saveLocalLeaderboard(entry) {
+      const list = getLocalLeaderboard();
+      list.push(entry);
+      list.sort((a, b) => b.score - a.score);
+      const top10 = list.slice(0, 10);
+      localStorage.setItem('nullg_local_leaderboard', JSON.stringify(top10));
+      return top10;
+    }
 
     // --------------------------------------------------------------------------
     // 1. PROCEDURAL WEB AUDIO SYNTHESIZER
@@ -1166,6 +1380,7 @@
         this.background = new DynamicBackground(this.canvas);
 
         this.coins = parseInt(localStorage.getItem('nullg_coins') || '0');
+        this.savedPilotName = localStorage.getItem('nullg_pilot_name') || '';
 
         this.isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         if (this.isTouchDevice) {
@@ -1175,11 +1390,12 @@
         this.keys = {};
         this.isFiring = false;
         this.joystickDx = 0;
-        this.boss = null; // Active Boss Flagship
+        this.boss = null;
 
         this.setupInputListeners();
         this.setupInGameShopUI();
         this.setupHomeConfirmUI();
+        this.setupLeaderboardUI();
         this.resetGame();
 
         this.lastTime = performance.now();
@@ -1191,6 +1407,11 @@
         const VALID_KEYS = new Set(['a', 'd', 'arrowleft', 'arrowright', ' ', 'escape', 'p', 'b', 'r']);
 
         window.addEventListener('keydown', (e) => {
+          // Allow typing in leaderboard name inputs without triggering game keys!
+          if (document.activeElement && (document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'goNameInput')) {
+            return;
+          }
+
           const code = e.code;
           const key = e.key ? e.key.toLowerCase() : '';
 
@@ -1219,6 +1440,7 @@
             if (code === 'Escape' || code === 'KeyP' || key === 'p' || key === 'escape') {
               this.closeInGameShop();
               this.closeHomeConfirmModal();
+              this.closeLeaderboardModal();
             }
           } else if (this.state === STATE.GAMEOVER) {
             if (code === 'KeyR' || key === 'r' || code === 'Space' || key === ' ') {
@@ -1228,6 +1450,10 @@
         });
 
         window.addEventListener('keyup', (e) => {
+          if (document.activeElement && (document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'goNameInput')) {
+            return;
+          }
+
           const code = e.code;
           const key = e.key ? e.key.toLowerCase() : '';
 
@@ -1327,6 +1553,114 @@
         document.getElementById('homeConfirmModal').classList.add('hidden');
       }
 
+      // ------------------------------------------------------------------------
+      // SUPABASE LEADERBOARD INTEGRATION & EVENT LISTENERS
+      // ------------------------------------------------------------------------
+      setupLeaderboardUI() {
+        const nameInput = document.getElementById('leaderboardNameInput');
+        const goNameInput = document.getElementById('goNameInput');
+
+        // Pre-fill pilot name from localStorage
+        if (this.savedPilotName) {
+          nameInput.value = this.savedPilotName;
+          goNameInput.value = this.savedPilotName;
+        }
+
+        // Leaderboard Navigation Buttons
+        document.getElementById('menuLeaderboardBtn').onclick = () => { sound.init(); this.openLeaderboardModal(); };
+        document.getElementById('hudRankBtn').onclick = () => { sound.init(); this.openLeaderboardModal(); };
+        document.getElementById('closeLeaderboardBtn').onclick = () => { sound.init(); this.closeLeaderboardModal(); };
+
+        // Submit Score Buttons (Modal + Death Screen)
+        document.getElementById('sendScoreBtn').onclick = () => this.sendScore('sendScoreBtn', nameInput);
+        document.getElementById('goSendScoreBtn').onclick = () => this.sendScore('goSendScoreBtn', goNameInput);
+      }
+
+      openLeaderboardModal() {
+        if (this.state === STATE.PLAYING) this.state = STATE.PAUSED;
+        document.getElementById('leaderboardModal').classList.remove('hidden');
+        this.renderLeaderboard();
+      }
+
+      closeLeaderboardModal() {
+        document.getElementById('leaderboardModal').classList.add('hidden');
+        if (this.state === STATE.PAUSED) this.state = STATE.PLAYING;
+      }
+
+      async renderLeaderboard() {
+        const tableBody = document.getElementById('leaderboardBody');
+        tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--neon-cyan);">FETCHING TELEMETRY...</td></tr>';
+
+        let data = null;
+        let error = null;
+
+        if (supabaseClient) {
+          try {
+            const res = await supabaseClient
+              .from('leaderboard')
+              .select('player_name, wave_reached, score')
+              .order('score', { ascending: false })
+              .limit(10);
+            data = res.data;
+            error = res.error;
+          } catch (e) {
+            error = e;
+          }
+        }
+
+        // Offline / Unconfigured Supabase Fallback
+        if (error || !data || data.length === 0) {
+          data = getLocalLeaderboard();
+        }
+
+        tableBody.innerHTML = data.map((entry, index) => {
+          const rankClass = index === 0 ? 'rank-gold' : index === 1 ? 'rank-silver' : index === 2 ? 'rank-bronze' : '';
+          const pName = entry.player_name ? String(entry.player_name).toUpperCase() : 'UNKNOWN PILOT';
+          const pScore = Number(entry.score || 0).toLocaleString();
+          return `
+            <tr class="${rankClass}">
+              <td>#${index + 1}</td>
+              <td>${pName}</td>
+              <td>WAVE ${entry.wave_reached || 1}</td>
+              <td>${pScore}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      async sendScore(btnId, inputEl) {
+        sound.init();
+        const btn = document.getElementById(btnId);
+        const enteredName = inputEl.value.trim().toUpperCase() || 'UNKNOWN PILOT';
+
+        // Save name to localStorage
+        this.savedPilotName = enteredName;
+        localStorage.setItem('nullg_pilot_name', enteredName);
+        document.getElementById('leaderboardNameInput').value = enteredName;
+        document.getElementById('goNameInput').value = enteredName;
+
+        const payload = {
+          player_name: enteredName,
+          score: this.score || 0,
+          wave_reached: this.wave || 1
+        };
+
+        btn.disabled = true;
+        btn.innerText = 'TRANSMITTED!';
+
+        if (supabaseClient) {
+          try {
+            await supabaseClient.from('leaderboard').insert([payload]);
+          } catch (e) {
+            console.warn('Saved score locally.');
+          }
+        }
+        saveLocalLeaderboard(payload);
+
+        // Open modal & refresh Top 10 rankings immediately
+        this.openLeaderboardModal();
+      }
+
       setupInGameShopUI() {
         document.getElementById('buyNanitesBtn').onclick = () => this.buyShopItem('nanites');
         document.getElementById('buyShieldBtn').onclick = () => this.buyShopItem('shield');
@@ -1355,6 +1689,7 @@
         } else if (this.state === STATE.PAUSED) {
           this.closeInGameShop();
           this.closeHomeConfirmModal();
+          this.closeLeaderboardModal();
         }
       }
 
@@ -1426,6 +1761,13 @@
         this.screenShake = 0;
         this.boss = null;
 
+        // Reset Death Screen submit button
+        const goBtn = document.getElementById('goSendScoreBtn');
+        if (goBtn) {
+          goBtn.disabled = false;
+          goBtn.innerText = 'SUBMIT SCORE';
+        }
+
         this.player = {
           x: 640,
           y: 620,
@@ -1443,7 +1785,7 @@
           maxVx: 14,
           shootTimer: 0,
           invulnerableTimer: 0,
-          isMovementLocked: false // Movement Lock rule during Boss Battles
+          isMovementLocked: false
         };
 
         this.lasers = [];
@@ -1461,6 +1803,7 @@
         document.getElementById('gameOverScreen').classList.add('hidden');
         document.getElementById('inGameShopModal').classList.add('hidden');
         document.getElementById('homeConfirmModal').classList.add('hidden');
+        document.getElementById('leaderboardModal').classList.add('hidden');
         this.triggerWaveBanner(1);
       }
 
@@ -1470,6 +1813,7 @@
         document.getElementById('gameOverScreen').classList.add('hidden');
         document.getElementById('inGameShopModal').classList.add('hidden');
         document.getElementById('homeConfirmModal').classList.add('hidden');
+        document.getElementById('leaderboardModal').classList.add('hidden');
       }
 
       triggerWaveBanner(waveNum, isBoss = false) {
@@ -1486,11 +1830,7 @@
         setTimeout(() => banner.classList.remove('show'), 2200);
       }
 
-      // ------------------------------------------------------------------------
-      // RECURRING BOSS BATTLES (EVERY 10 WAVES)
-      // ------------------------------------------------------------------------
       checkBossTrigger() {
-        // Trigger Boss Battle at Wave 10, 20, 30, 40...
         if (this.wave % 10 === 0 && !this.boss && this.enemies.length === 0) {
           this.spawnBoss();
         }
@@ -1511,7 +1851,6 @@
           dead: false
         };
 
-        // Movement Lock Rule: Freeze player movement during Boss Battle
         this.player.isMovementLocked = true;
         this.player.vx = 0;
 
@@ -1524,29 +1863,25 @@
         sound.playExplosion(true);
         this.screenShake = 30;
 
-        // Massive Explosion Burst
         this.createExplosion(this.boss.x, this.boss.y, '#ff007f', 40);
         this.createExplosion(this.boss.x - 40, this.boss.y, '#ffaa00', 30);
         this.createExplosion(this.boss.x + 40, this.boss.y, '#00f0ff', 30);
 
         this.score += 2500;
-        this.coins += 500; // Reward +500 bonus coins on Boss Defeat
+        this.coins += 500;
         localStorage.setItem('nullg_coins', this.coins);
 
         this.boss = null;
         document.getElementById('bossHpContainer').style.display = 'none';
 
-        // Unlock player movement immediately after Boss defeat
         this.player.isMovementLocked = false;
-
-        // Advance to next wave
         this.waveEnemiesDefeated = this.waveEnemiesToDefeat;
       }
 
       gameOver() {
         this.state = STATE.GAMEOVER;
         sound.playExplosion(true);
-        document.getElementById('goScore').innerText = this.score;
+        document.getElementById('goScore').innerText = Number(this.score).toLocaleString();
         document.getElementById('goWave').innerText = `${this.wave} / 100`;
         document.getElementById('gameOverScreen').classList.remove('hidden');
       }
@@ -1570,7 +1905,6 @@
       update(dt) {
         const p = this.player;
 
-        // 1. Player Steering (MOVEMENT LOCK RULE DURING BOSS)
         if (!p.isMovementLocked) {
           let dir = 0;
           if (this.keys['a'] || this.keys['arrowleft'] || this.keys['KeyA'] || this.keys['ArrowLeft']) dir -= 1;
@@ -1588,14 +1922,13 @@
           p.x += p.vx;
           p.x = Math.max(40, Math.min(1240, p.x));
         } else {
-          p.vx = 0; // Frozen in position during Boss fight
+          p.vx = 0;
         }
 
         p.y = 620;
         const targetAngle = (p.vx / p.maxVx) * 0.40;
         p.angle += (targetAngle - p.angle) * 0.20;
 
-        // Thruster Flames
         if (Math.random() < 0.85) {
           [-10, 10].forEach(ox => {
             this.particles.push({
@@ -1611,7 +1944,6 @@
           });
         }
 
-        // 2. Firing
         p.shootTimer += dt;
         const fireDelay = p.overclocked ? 0.08 : 0.13;
         const wantsToFire = this.isFiring || this.keys['Space'] || this.keys[' '];
@@ -1620,17 +1952,14 @@
           this.fireTwinPlasma();
         }
 
-        // 3. Invulnerability Timer
         if (p.invulnerableTimer > 0) p.invulnerableTimer -= dt;
 
-        // 4. Update Player Lasers
         for (let i = this.lasers.length - 1; i >= 0; i--) {
           const l = this.lasers[i];
           l.y -= 20;
           if (l.y < -30 || l.dead) this.lasers.splice(i, 1);
         }
 
-        // 5. Update Enemy Lasers
         for (let i = this.enemyLasers.length - 1; i >= 0; i--) {
           const el = this.enemyLasers[i];
           el.x += el.vx || 0;
@@ -1638,7 +1967,6 @@
           if (el.y > 750 || el.dead) this.enemyLasers.splice(i, 1);
         }
 
-        // 6. Boss Update Logic
         if (this.boss) {
           const b = this.boss;
           if (b.y < b.targetY) b.y += 2;
@@ -1650,7 +1978,6 @@
           if (b.shootTimer >= 1.3) {
             b.shootTimer = 0;
             sound.playHit();
-            // 3-Way Spread Plasma Attacks
             [-3, 0, 3].forEach(vx => {
               this.enemyLasers.push({
                 x: b.x + (vx * 10), y: b.y + 40, vx: vx, vy: 7, radius: 5, color: '#ff0055'
@@ -1659,7 +1986,6 @@
           }
         }
 
-        // 7. 3% Per-Wave Speed Scaling & Normal Spawning (Halt during Boss)
         const waveSpeedMult = 1 + (this.wave - 1) * 0.03;
 
         if (this.wave % 10 === 0 && !this.boss) {
@@ -1675,10 +2001,8 @@
           }
         }
 
-        // 8. Update Hazards, Moderate Speed Enemy AI & Screen Border Bounce
         this.updateEnemies(dt, waveSpeedMult);
 
-        // 9. Update Particles
         for (let i = this.particles.length - 1; i >= 0; i--) {
           const pt = this.particles[i];
           pt.x += pt.vx;
@@ -1687,10 +2011,8 @@
           if (pt.alpha <= 0) this.particles.splice(i, 1);
         }
 
-        // 10. Collisions Check
         this.checkCollisions();
 
-        // 11. Wave Progression
         if (this.waveEnemiesDefeated >= this.waveEnemiesToDefeat && !this.boss) {
           if (this.wave < 100) {
             this.wave++;
@@ -1730,15 +2052,10 @@
         }
       }
 
-      // ------------------------------------------------------------------------
-      // RULE 1: MODERATE ENEMY SPEEDS (3 to 3.5 px/frame descent, 1.5 to 2 px/frame weave)
-      // RULE 2: 2-HIT ENEMY DESTRUCTION RULE & BORDER BOUNCE
-      // ------------------------------------------------------------------------
       spawnDynamicEnemyFormation(waveSpeedMult) {
         const rand = Math.random();
 
         if (rand < 0.30) {
-          // S-CURVE WEAVER (Descent: 3-3.5 px/frame, Weave: 1.5-2 px/frame, HP: 2)
           const baseX = 150 + Math.random() * 980;
           const amp = 70 + Math.random() * 50;
           const freq = 0.002 + Math.random() * 0.001;
@@ -1750,9 +2067,9 @@
             y: -60,
             width: 36,
             height: 40,
-            hp: 2, // 2-Hit Destruction Rule
+            hp: 2,
             maxHp: 2,
-            speed: (3.0 + Math.random() * 0.5) * waveSpeedMult, // 3-3.5 px/frame descent
+            speed: (3.0 + Math.random() * 0.5) * waveSpeedMult,
             amp: amp,
             freq: freq,
             phase: Math.random() * Math.PI * 2,
@@ -1760,11 +2077,9 @@
             score: 250
           });
         } else if (rand < 0.55) {
-          // PINCER SQUADRON (Descent: 3-3.5 px/frame, HP: 2)
           const fromLeft = Math.random() < 0.5;
           const spawnX = fromLeft ? -40 : 1320;
-          const targetX = 640 + (Math.random() - 0.5) * 200;
-          const vx = (fromLeft ? 1 : -1) * (1.5 + Math.random() * 0.5); // 1.5 - 2 px/frame horizontal
+          const vx = (fromLeft ? 1 : -1) * (1.5 + Math.random() * 0.5);
           const vy = (3.0 + Math.random() * 0.5) * waveSpeedMult;
 
           this.enemies.push({
@@ -1773,7 +2088,7 @@
             y: -50,
             width: 38,
             height: 38,
-            hp: 2, // 2-Hit Destruction Rule
+            hp: 2,
             maxHp: 2,
             vx: vx,
             vy: vy,
@@ -1782,7 +2097,6 @@
             score: 300
           });
         } else if (rand < 0.75) {
-          // STRAFING INTERCEPTOR (Descent: 3.2 px/frame, HP: 2)
           const spawnX = 100 + Math.random() * 1080;
           this.enemies.push({
             type: 'strafer',
@@ -1790,7 +2104,7 @@
             y: -60,
             width: 40,
             height: 42,
-            hp: 2, // 2-Hit Destruction Rule
+            hp: 2,
             maxHp: 2,
             speed: 3.2 * waveSpeedMult,
             pauseY: 180 + Math.random() * 180,
@@ -1800,15 +2114,14 @@
             score: 350
           });
         } else if (rand < 0.90) {
-          // DURABLE ASTEROID (Takes 3 to 5 hits to break)
           const spawnX = 80 + Math.random() * 1120;
-          const astHp = Math.floor(3 + Math.random() * 3); // 3 to 5 hits
+          const astHp = Math.floor(3 + Math.random() * 3);
           this.enemies.push({
             type: 'armoredAsteroid',
             x: spawnX,
             y: -60,
             radius: 32,
-            hp: astHp, // Durable Asteroid Rule (3-5 HP)
+            hp: astHp,
             maxHp: astHp,
             speed: (2.2 + Math.random() * 0.8) * waveSpeedMult,
             rot: 0,
@@ -1817,7 +2130,6 @@
             score: 200
           });
         } else {
-          // LASER GATE HAZARD
           const gateWidth = 260;
           const clampedX = 160 + Math.random() * 960;
           this.enemies.push({
@@ -1840,7 +2152,6 @@
             e.y += e.speed;
             e.x = e.baseX + Math.sin((now * e.freq) + e.phase) * e.amp;
 
-            // BORDER BOUNCE RULE: If enemy strikes left/right border, register 1 hit & reverse direction
             if (e.x <= 40 || e.x >= 1240) {
               e.hp -= 1;
               e.baseX = Math.max(100, Math.min(1180, e.baseX + (e.x <= 40 ? 40 : -40)));
@@ -1861,7 +2172,6 @@
             e.x += e.vx;
             e.y += e.vy;
 
-            // BORDER BOUNCE RULE: If pincer strikes left/right border, take 1 hit & reverse vx
             if (e.x <= 40 || e.x >= 1240) {
               e.hp -= 1;
               e.vx = -e.vx;
@@ -1918,13 +2228,9 @@
         }
       }
 
-      // ------------------------------------------------------------------------
-      // COLLISIONS & EXACT DAMAGE RULES
-      // ------------------------------------------------------------------------
       checkCollisions() {
         const p = this.player;
 
-        // A. Player Lasers vs Boss
         if (this.boss && !this.boss.dead) {
           const b = this.boss;
           for (let i = this.lasers.length - 1; i >= 0; i--) {
@@ -1944,7 +2250,6 @@
           }
         }
 
-        // B. Player Lasers vs Enemies & Durable Asteroids (3-5 Hits)
         for (let i = this.lasers.length - 1; i >= 0; i--) {
           const l = this.lasers[i];
 
@@ -1962,13 +2267,11 @@
             if (hit) {
               l.dead = true;
               e.hp -= (p.overclocked ? 1.5 : 1);
-              e.hitFlashTimer = 0.12; // Visual Hit Flash
+              e.hitFlashTimer = 0.12;
               sound.playHit();
 
-              // Visible Surface Impact Sparks
               this.createSparks(l.x, l.y, e.type === 'armoredAsteroid' ? '#ffaa00' : '#00f0ff', 7);
 
-              // 2-Hit Destruction / Asteroid Destruction Check
               if (e.hp <= 0) {
                 e.dead = true;
                 this.score += e.score || 200;
@@ -1981,7 +2284,6 @@
                   });
                 }
 
-                // Shatter into particles when fully broken
                 this.createExplosion(e.x, e.y, e.type === 'armoredAsteroid' ? '#ffaa00' : '#ff007f', 22);
               }
               break;
@@ -1989,16 +2291,14 @@
           }
         }
 
-        // C. Enemy Lasers vs Player (EXACT -7 HP per plasma hit)
         for (let i = this.enemyLasers.length - 1; i >= 0; i--) {
           const el = this.enemyLasers[i];
           if (Math.hypot(el.x - p.x, el.y - p.y) <= 22) {
             el.dead = true;
-            this.damagePlayer(7); // -7 HP per plasma hit
+            this.damagePlayer(7);
           }
         }
 
-        // D. Direct Collisions: Player vs Enemy Jets & Obstacles
         if (p.invulnerableTimer <= 0) {
           for (let j = 0; j < this.enemies.length; j++) {
             const e = this.enemies[j];
@@ -2007,13 +2307,13 @@
 
             if (e.type === 'laserGate') {
               collided = (Math.abs(p.x - e.x) < e.width / 2 && Math.abs(p.y - e.y) < 18);
-              dmg = 35; // Laser Gate: -35 HP
+              dmg = 35;
             } else if (e.type === 'spaceMine') {
               collided = Math.hypot(p.x - e.x, p.y - e.y) <= (e.radius + 18);
-              dmg = 40; // Space Mine: -40 HP
+              dmg = 40;
             } else if (e.type === 'armoredAsteroid') {
               collided = Math.hypot(p.x - e.x, p.y - e.y) <= (e.radius + 18);
-              dmg = 10; // Hitting obstacle/asteroid: -10 HP
+              dmg = 10;
             } else {
               collided = (Math.abs(p.x - e.x) < (p.width / 2 + e.width / 2) &&
                           Math.abs(p.y - e.y) < (p.height / 2 + e.height / 2));
@@ -2021,7 +2321,6 @@
             }
 
             if (collided) {
-              // Direct collision destroys regular enemy jet instantly
               if (e.type !== 'laserGate') {
                 e.dead = true;
                 e.hp = 0;
@@ -2108,7 +2407,6 @@
           shieldBadge.style.display = 'none';
         }
 
-        // BOSS HP BAR HUD UPDATE
         if (this.boss) {
           const b = this.boss;
           const bossPct = Math.max(0, (b.hp / b.maxHp) * 100);
@@ -2145,7 +2443,6 @@
         rc.arc(px, py, 3.5, 0, Math.PI * 2);
         rc.fill();
 
-        // Render Boss Blip on Radar
         if (this.boss) {
           const bx = (this.boss.x / 1280) * rw;
           const by = ((this.boss.y + 100) / (720 + 100)) * rh;
@@ -2208,9 +2505,8 @@
         ctx.lineWidth = 3;
         ctx.fillStyle = 'rgba(25, 10, 30, 0.95)';
 
-        // Heavy Flagship Dreadnought Hull
         ctx.beginPath();
-        ctx.moveTo(0, 40); // Nose Down
+        ctx.moveTo(0, 40);
         ctx.lineTo(-50, 10);
         ctx.lineTo(-70, -20);
         ctx.lineTo(-40, -35);
@@ -2222,7 +2518,6 @@
         ctx.fill();
         ctx.stroke();
 
-        // Glowing Boss Plasma Core
         ctx.beginPath();
         ctx.arc(0, 0, 14, 0, Math.PI * 2);
         ctx.fillStyle = '#ffaa00';
@@ -2329,7 +2624,6 @@
             ctx.fill();
             ctx.stroke();
           } else if (e.type === 'armoredAsteroid') {
-            // DURABLE ASTEROID RENDERING (WITH SURFACE DAMAGE CRACKS)
             ctx.rotate(e.rot || 0);
             ctx.shadowColor = e.hitFlashTimer > 0 ? '#ffffff' : '#ffaa00';
             ctx.shadowBlur = 14;
@@ -2349,7 +2643,6 @@
             ctx.fill();
             ctx.stroke();
 
-            // Procedural Surface Cracks Overlay on Taking Damage
             const damageRatio = 1 - (e.hp / e.maxHp);
             if (damageRatio > 0) {
               ctx.strokeStyle = '#ff0055';
