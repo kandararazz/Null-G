@@ -53,13 +53,14 @@
       align-items: center;
     }
 
-    /* CRT Scanline Grid Effect Overlay */
+    /* CRT Scanline Grid Effect Overlay (sits above canvas, transparent to clicks) */
     .crt-scanline-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      z-index: 8;
       background: linear-gradient(
         rgba(18, 16, 16, 0) 50%, 
         rgba(0, 0, 0, 0.25) 50%
@@ -71,7 +72,6 @@
       );
       background-size: 100% 3px, 6px 100%;
       pointer-events: none;
-      z-index: 8;
     }
 
     /* Container for 16:9 Canvas Aspect-Ratio Letterboxing (1280x720) */
@@ -85,9 +85,15 @@
       background: #000;
     }
 
+    /* CANVAS SITS AT THE BACK (z-index: 1, pointer-events: auto for mouse shooting) */
     canvas#gameCanvas {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      pointer-events: auto;
       display: block;
-      /* 16:9 Internal Canvas Aspect Ratio Engine */
       aspect-ratio: 16 / 9;
       object-fit: contain;
       width: 100vw;
@@ -132,7 +138,7 @@
       #portraitGuard { display: flex; }
     }
 
-    /* UI Overlay Layer */
+    /* UI OVERLAY LAYER (z-index: 10, pointer-events: none allows canvas clicks through empty space) */
     .ui-layer {
       position: absolute;
       top: 50%;
@@ -146,6 +152,25 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+    }
+
+    /* ALL CLICKABLE / INTERACTIVE UI ELEMENTS HAVE POINTER-EVENTS RE-ENABLED */
+    button, 
+    input, 
+    .btn-cyber-strip, 
+    .btn-action, 
+    .hud-home-btn, 
+    .hud-shop-btn, 
+    .btn-buy, 
+    .touch-btn-fire, 
+    .joystick-base, 
+    .leaderboard-submit-bar button, 
+    .icon-btn {
+      pointer-events: auto !important;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     /* HUD Top Bar */
@@ -242,7 +267,7 @@
       box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
     }
 
-    /* HUD Buttons (Sleeker & Slightly Smaller) */
+    /* HUD Buttons */
     .hud-home-btn {
       font-family: var(--font-mono);
       font-size: 11px;
@@ -254,7 +279,6 @@
       border-radius: 4px;
       padding: 6px 10px;
       cursor: pointer;
-      pointer-events: auto;
       min-height: 34px;
       box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
       transition: all 0.15s ease;
@@ -328,7 +352,6 @@
       border-radius: 4px;
       padding: 4px 10px;
       cursor: pointer;
-      pointer-events: auto;
       box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
       transition: all 0.15s ease;
     }
@@ -441,7 +464,7 @@
       100% { opacity: 1.0; transform: translate(-50%, -50%) scale(1.12); }
     }
 
-    /* Mobile Touch Controls Layer (Virtual Joystick + Fire Trigger Button) */
+    /* Mobile Touch Controls Layer */
     .mobile-controls-layer {
       position: absolute;
       bottom: 20px;
@@ -451,7 +474,7 @@
       display: none; /* AUTO-DETECTED: Shown ONLY on mobile touch devices */
       justify-content: space-between;
       align-items: flex-end;
-      pointer-events: auto;
+      pointer-events: none;
       z-index: 15;
     }
 
@@ -498,8 +521,6 @@
       align-items: center;
       box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
       cursor: pointer;
-      touch-action: none;
-      user-select: none;
       transition: transform 0.05s ease, background 0.05s ease;
     }
 
@@ -521,7 +542,7 @@
       margin-top: 10px;
     }
 
-    /* Overlay Screen Menus & Modals */
+    /* OVERLAY SCREEN MENUS & MODALS (z-index: 25, pointer-events: none on backdrop, auto on menu-panel) */
     .menu-screen {
       position: absolute;
       top: 0;
@@ -535,8 +556,12 @@
       justify-content: center;
       align-items: center;
       z-index: 25;
-      pointer-events: auto;
+      pointer-events: none;
       transition: opacity 0.3s ease;
+    }
+
+    .menu-screen:not(.hidden) {
+      pointer-events: none;
     }
 
     .menu-screen.hidden {
@@ -579,6 +604,7 @@
       flex-direction: column;
       align-items: center;
       gap: 12px;
+      pointer-events: auto !important;
     }
 
     /* Pilot Identity Input Bar */
@@ -622,7 +648,7 @@
       color: rgba(0, 229, 255, 0.4);
     }
 
-    /* VERTICAL CYBER-STRIP BUTTON DESIGN SYSTEM (SLEEK & SLIGHTLY SMALLER) */
+    /* VERTICAL CYBER-STRIP BUTTON DESIGN SYSTEM */
     .cyber-strip-group {
       display: flex;
       flex-direction: column;
@@ -641,8 +667,6 @@
       background: rgba(10, 16, 26, 0.85);
       color: #fff;
       cursor: pointer;
-      touch-action: none;
-      user-select: none;
       clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
       box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
       transition: all 0.15s ease;
@@ -807,6 +831,7 @@
       flex-direction: column;
       align-items: center;
       gap: 10px;
+      pointer-events: auto !important;
     }
 
     .leaderboard-table-container {
@@ -938,7 +963,6 @@
       font-size: 16px;
       cursor: pointer;
       z-index: 30;
-      pointer-events: auto;
       box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
     }
 
@@ -1184,7 +1208,7 @@
           <input type="text" id="homePilotCallsign" class="pilot-identity-input" placeholder="CALLSIGN: RAZA" maxlength="12" />
         </div>
 
-        <!-- Vertical Cyber-Strip Action Buttons (Sleek & Compact) -->
+        <!-- Vertical Cyber-Strip Action Buttons -->
         <div class="cyber-strip-group">
           <button id="startBtn" class="btn-cyber-strip primary-launch">[ LAUNCH MISSION ]</button>
           <button id="menuLeaderboardBtn" class="btn-cyber-strip purple-accent">[ GLOBAL LEADERBOARD ]</button>
@@ -1232,6 +1256,30 @@
        NULL-G: ACCELERATING WAVES, RECURRING BOSSES & SUPABASE LEADERBOARD
        CREATED BY RAZA
        ========================================================================== */
+
+    // DUAL TOUCH & CLICK BINDING HELPER (CRITICAL FOR MOBILE + DESKTOP RESPONSIVENESS)
+    function bindInteractiveButton(elementId, actionFn) {
+      const btn = document.getElementById(elementId);
+      if (!btn) return;
+
+      let handled = false;
+
+      btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handled = true;
+        actionFn(e);
+        setTimeout(() => { handled = false; }, 300);
+      }, { passive: false });
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!handled) {
+          actionFn(e);
+        }
+      });
+    }
 
     // --------------------------------------------------------------------------
     // 0. SUPABASE CLIENT & LEADERBOARD SYSTEM (WITH LOCAL OFFLINE FALLBACK)
@@ -1662,7 +1710,7 @@
           }
         });
 
-        // Desktop Mouse Click Laser Firing
+        // Desktop Mouse Click Laser Firing on Canvas
         this.canvas.addEventListener('mousedown', (e) => {
           if (e.button === 0) { // Left Mouse Click
             sound.init();
@@ -1713,15 +1761,16 @@
         }, { passive: false });
         fireBtn.addEventListener('touchend', (e) => { e.preventDefault(); this.isFiring = false; }, { passive: false });
 
-        document.getElementById('startBtn').addEventListener('click', () => { sound.init(); this.startGame(); });
-        document.getElementById('retryBtn').addEventListener('click', () => { sound.init(); this.startGame(); });
-        document.getElementById('homeGoBtn').addEventListener('click', () => { sound.init(); this.showMenu(); });
-        document.getElementById('hudShopBtn').addEventListener('click', () => { sound.init(); this.openInGameShop(); });
-        document.getElementById('menuArmoryBtn').addEventListener('click', () => { sound.init(); this.openInGameShop(); });
-        document.getElementById('closeShopBtn').addEventListener('click', () => { sound.init(); this.closeInGameShop(); });
-        document.getElementById('hudHomeBtn').addEventListener('click', () => { sound.init(); this.openHomeConfirmModal(); });
+        // EXPLICIT DUAL TOUCH & CLICK BUTTON BINDINGS USING bindInteractiveButton
+        bindInteractiveButton('startBtn', () => { sound.init(); this.startGame(); });
+        bindInteractiveButton('retryBtn', () => { sound.init(); this.startGame(); });
+        bindInteractiveButton('homeGoBtn', () => { sound.init(); this.showMenu(); });
+        bindInteractiveButton('hudShopBtn', () => { sound.init(); this.openInGameShop(); });
+        bindInteractiveButton('menuArmoryBtn', () => { sound.init(); this.openInGameShop(); });
+        bindInteractiveButton('closeShopBtn', () => { sound.init(); this.closeInGameShop(); });
+        bindInteractiveButton('hudHomeBtn', () => { sound.init(); this.openHomeConfirmModal(); });
 
-        document.getElementById('audioToggleBtn').addEventListener('click', () => {
+        bindInteractiveButton('audioToggleBtn', () => {
           sound.init();
           const isMuted = sound.toggleMute();
           document.getElementById('audioToggleBtn').innerText = isMuted ? '🔇' : '🔊';
@@ -1729,15 +1778,15 @@
       }
 
       setupHomeConfirmUI() {
-        document.getElementById('confirmHomeBtn').onclick = () => {
+        bindInteractiveButton('confirmHomeBtn', () => {
           sound.init();
           this.closeHomeConfirmModal();
           this.showMenu();
-        };
-        document.getElementById('cancelHomeBtn').onclick = () => {
+        });
+        bindInteractiveButton('cancelHomeBtn', () => {
           sound.init();
           this.closeHomeConfirmModal();
-        };
+        });
       }
 
       openHomeConfirmModal() {
@@ -1761,12 +1810,12 @@
           if (callsignInput) callsignInput.value = this.savedPilotName;
         }
 
-        document.getElementById('menuLeaderboardBtn').onclick = () => { sound.init(); this.openLeaderboardModal(); };
-        document.getElementById('hudRankBtn').onclick = () => { sound.init(); this.openLeaderboardModal(); };
-        document.getElementById('closeLeaderboardBtn').onclick = () => { sound.init(); this.closeLeaderboardModal(); };
+        bindInteractiveButton('menuLeaderboardBtn', () => { sound.init(); this.openLeaderboardModal(); });
+        bindInteractiveButton('hudRankBtn', () => { sound.init(); this.openLeaderboardModal(); });
+        bindInteractiveButton('closeLeaderboardBtn', () => { sound.init(); this.closeLeaderboardModal(); });
 
-        document.getElementById('sendScoreBtn').onclick = () => this.sendScore('sendScoreBtn', nameInput || callsignInput);
-        document.getElementById('submitScoreBtn').onclick = () => this.sendScore('submitScoreBtn', callsignInput || nameInput);
+        bindInteractiveButton('sendScoreBtn', () => this.sendScore('sendScoreBtn', nameInput || callsignInput));
+        bindInteractiveButton('submitScoreBtn', () => this.sendScore('submitScoreBtn', callsignInput || nameInput));
       }
 
       openLeaderboardModal() {
@@ -1825,10 +1874,10 @@
       }
 
       setupInGameShopUI() {
-        document.getElementById('buyNanitesBtn').onclick = () => this.buyShopItem('nanites');
-        document.getElementById('buyShieldBtn').onclick = () => this.buyShopItem('shield');
-        document.getElementById('buyOverclockBtn').onclick = () => this.buyShopItem('overclock');
-        document.getElementById('buySmartBombBtn').onclick = () => this.buyShopItem('smartbomb');
+        bindInteractiveButton('buyNanitesBtn', () => this.buyShopItem('nanites'));
+        bindInteractiveButton('buyShieldBtn', () => this.buyShopItem('shield'));
+        bindInteractiveButton('buyOverclockBtn', () => this.buyShopItem('overclock'));
+        bindInteractiveButton('buySmartBombBtn', () => this.buyShopItem('smartbomb'));
       }
 
       openInGameShop() {
@@ -2629,7 +2678,7 @@
           const by = ((this.boss.y + 100) / (720 + 100)) * rh;
           rc.fillStyle = '#ff0055';
           rc.shadowColor = '#ff0055';
-          rc.shadowBlur = 12;
+          rc.shadowBlur = 6;
           rc.beginPath();
           rc.arc(bx, by, 6, 0, Math.PI * 2);
           rc.fill();
@@ -2896,8 +2945,8 @@
       }
     }
 
-    // Initialize Game Instance on Load
-    window.addEventListener('load', () => {
+    // Initialize Game Instance on DOM Content Loaded
+    window.addEventListener('DOMContentLoaded', () => {
       window.nullGGame = new NullGGame();
     });
   </script>
