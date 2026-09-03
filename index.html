@@ -897,7 +897,7 @@
         </div>
       </div>
 
-      <!-- Mobile Touch Controls Layer (Virtual Joystick + Fire) -->
+      <!-- Mobile Touch Controls Layer (Virtual Joystick + Fire Button) -->
       <div class="mobile-controls-layer" id="mobileControlsLayer">
         <!-- Virtual Joystick -->
         <div class="joystick-base" id="joystickBase">
@@ -926,7 +926,7 @@
               </tr>
             </thead>
             <tbody id="leaderboardBody">
-              <tr><td colspan="4" style="text-align: center;">FETCHING TELEMETRY...</td></tr>
+              <tr><td colspan="4" style="text-align: center; color: var(--neon-cyan);">FETCHING TELEMETRY...</td></tr>
             </tbody>
           </table>
         </div>
@@ -1075,10 +1075,10 @@
           WAVE REACHED: <span id="goWave">1 / 100</span>
         </div>
 
-        <!-- Score Submission Bar on Death Screen -->
+        <!-- Score Submission Bar on Death Screen (Dual Aliases for pilotCallsign & submitScoreBtn) -->
         <div class="leaderboard-submit-bar" style="margin: 8px 0;">
-          <input type="text" id="goNameInput" placeholder="TYPE YOUR NAME" maxlength="12" />
-          <button id="goSendScoreBtn">SUBMIT SCORE</button>
+          <input type="text" id="pilotCallsign" placeholder="ENTER CALLSIGN" maxlength="12" />
+          <button id="submitScoreBtn">SUBMIT SCORE</button>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
@@ -1102,13 +1102,17 @@
     // --------------------------------------------------------------------------
     // 0. SUPABASE CLIENT & LEADERBOARD SYSTEM (WITH LOCAL OFFLINE FALLBACK)
     // --------------------------------------------------------------------------
-    const SUPABASE_URL = 'https://xyzcompany.supabase.co'; // Placeholder / Connected URL
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Placeholder / Connected Key
+    const SUPABASE_URL = window.SUPABASE_URL || localStorage.getItem('nullg_supabase_url') || 'https://xyzcompany.supabase.co';
+    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || localStorage.getItem('nullg_supabase_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
 
+    // Both `supabase` and `supabaseClient` bound globally for exact user spec compatibility
+    let supabase = null;
     let supabaseClient = null;
+
     if (window.supabase && typeof window.supabase.createClient === 'function') {
       try {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        supabaseClient = supabase;
       } catch (e) {
         console.warn('Supabase initialization fallback to offline storage mode.');
       }
@@ -1136,6 +1140,44 @@
       const top10 = list.slice(0, 10);
       localStorage.setItem('nullg_local_leaderboard', JSON.stringify(top10));
       return top10;
+    }
+
+    // Exact renderLeaderboard() implementation matching user spec
+    async function renderLeaderboard() {
+      const tableBody = document.getElementById('leaderboardBody');
+      if (!tableBody) return;
+
+      tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--neon-cyan);">FETCHING TELEMETRY...</td></tr>';
+
+      let data = null;
+      let error = null;
+
+      if (supabase) {
+        try {
+          const res = await supabase
+            .from('leaderboard')
+            .select('player_name, wave_reached, score')
+            .order('score', { ascending: false })
+            .limit(10);
+          data = res.data;
+          error = res.error;
+        } catch (e) {
+          error = e;
+        }
+      }
+
+      if (error || !data || data.length === 0) {
+        data = getLocalLeaderboard();
+      }
+
+      tableBody.innerHTML = data.map((entry, index) => `
+        <tr class="${index === 0 ? 'rank-gold' : index === 1 ? 'rank-silver' : index === 2 ? 'rank-bronze' : ''}">
+          <td>#${index + 1}</td>
+          <td>${entry.player_name ? String(entry.player_name).toUpperCase() : 'UNKNOWN PILOT'}</td>
+          <td>WAVE ${entry.wave_reached || 1}</td>
+          <td>${Number(entry.score || 0).toLocaleString()}</td>
+        </tr>
+      `).join('');
     }
 
     // --------------------------------------------------------------------------
@@ -1407,8 +1449,7 @@
         const VALID_KEYS = new Set(['a', 'd', 'arrowleft', 'arrowright', ' ', 'escape', 'p', 'b', 'r']);
 
         window.addEventListener('keydown', (e) => {
-          // Allow typing in leaderboard name inputs without triggering game keys!
-          if (document.activeElement && (document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'goNameInput')) {
+          if (document.activeElement && (document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'pilotCallsign')) {
             return;
           }
 
@@ -1450,7 +1491,7 @@
         });
 
         window.addEventListener('keyup', (e) => {
-          if (document.activeElement && (document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'goNameInput')) {
+          if (document.activeElement && (document.activeElement.id === 'leaderboardNameInput' || document.activeElement.id === 'pilotCallsign')) {
             return;
           }
 
@@ -1558,28 +1599,25 @@
       // ------------------------------------------------------------------------
       setupLeaderboardUI() {
         const nameInput = document.getElementById('leaderboardNameInput');
-        const goNameInput = document.getElementById('goNameInput');
+        const callsignInput = document.getElementById('pilotCallsign');
 
-        // Pre-fill pilot name from localStorage
         if (this.savedPilotName) {
-          nameInput.value = this.savedPilotName;
-          goNameInput.value = this.savedPilotName;
+          if (nameInput) nameInput.value = this.savedPilotName;
+          if (callsignInput) callsignInput.value = this.savedPilotName;
         }
 
-        // Leaderboard Navigation Buttons
         document.getElementById('menuLeaderboardBtn').onclick = () => { sound.init(); this.openLeaderboardModal(); };
         document.getElementById('hudRankBtn').onclick = () => { sound.init(); this.openLeaderboardModal(); };
         document.getElementById('closeLeaderboardBtn').onclick = () => { sound.init(); this.closeLeaderboardModal(); };
 
-        // Submit Score Buttons (Modal + Death Screen)
-        document.getElementById('sendScoreBtn').onclick = () => this.sendScore('sendScoreBtn', nameInput);
-        document.getElementById('goSendScoreBtn').onclick = () => this.sendScore('goSendScoreBtn', goNameInput);
+        document.getElementById('sendScoreBtn').onclick = () => this.sendScore('sendScoreBtn', nameInput || callsignInput);
+        document.getElementById('submitScoreBtn').onclick = () => this.sendScore('submitScoreBtn', callsignInput || nameInput);
       }
 
       openLeaderboardModal() {
         if (this.state === STATE.PLAYING) this.state = STATE.PAUSED;
         document.getElementById('leaderboardModal').classList.remove('hidden');
-        this.renderLeaderboard();
+        renderLeaderboard();
       }
 
       closeLeaderboardModal() {
@@ -1587,57 +1625,18 @@
         if (this.state === STATE.PAUSED) this.state = STATE.PLAYING;
       }
 
-      async renderLeaderboard() {
-        const tableBody = document.getElementById('leaderboardBody');
-        tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--neon-cyan);">FETCHING TELEMETRY...</td></tr>';
-
-        let data = null;
-        let error = null;
-
-        if (supabaseClient) {
-          try {
-            const res = await supabaseClient
-              .from('leaderboard')
-              .select('player_name, wave_reached, score')
-              .order('score', { ascending: false })
-              .limit(10);
-            data = res.data;
-            error = res.error;
-          } catch (e) {
-            error = e;
-          }
-        }
-
-        // Offline / Unconfigured Supabase Fallback
-        if (error || !data || data.length === 0) {
-          data = getLocalLeaderboard();
-        }
-
-        tableBody.innerHTML = data.map((entry, index) => {
-          const rankClass = index === 0 ? 'rank-gold' : index === 1 ? 'rank-silver' : index === 2 ? 'rank-bronze' : '';
-          const pName = entry.player_name ? String(entry.player_name).toUpperCase() : 'UNKNOWN PILOT';
-          const pScore = Number(entry.score || 0).toLocaleString();
-          return `
-            <tr class="${rankClass}">
-              <td>#${index + 1}</td>
-              <td>${pName}</td>
-              <td>WAVE ${entry.wave_reached || 1}</td>
-              <td>${pScore}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-
       async sendScore(btnId, inputEl) {
         sound.init();
         const btn = document.getElementById(btnId);
-        const enteredName = inputEl.value.trim().toUpperCase() || 'UNKNOWN PILOT';
+        const enteredName = (inputEl && inputEl.value ? inputEl.value.trim().toUpperCase() : '') || this.savedPilotName || 'UNKNOWN PILOT';
 
-        // Save name to localStorage
         this.savedPilotName = enteredName;
         localStorage.setItem('nullg_pilot_name', enteredName);
-        document.getElementById('leaderboardNameInput').value = enteredName;
-        document.getElementById('goNameInput').value = enteredName;
+
+        const nameInput = document.getElementById('leaderboardNameInput');
+        const callsignInput = document.getElementById('pilotCallsign');
+        if (nameInput) nameInput.value = enteredName;
+        if (callsignInput) callsignInput.value = enteredName;
 
         const payload = {
           player_name: enteredName,
@@ -1645,19 +1644,26 @@
           wave_reached: this.wave || 1
         };
 
-        btn.disabled = true;
-        btn.innerText = 'TRANSMITTED!';
+        if (btn) {
+          btn.disabled = true;
+          btn.innerText = 'TRANSMITTED!';
+        }
 
-        if (supabaseClient) {
+        const goBtn = document.getElementById('submitScoreBtn');
+        if (goBtn) {
+          goBtn.disabled = true;
+          goBtn.innerText = 'RECORDED!';
+        }
+
+        if (supabase) {
           try {
-            await supabaseClient.from('leaderboard').insert([payload]);
+            await supabase.from('leaderboard').insert([payload]);
           } catch (e) {
             console.warn('Saved score locally.');
           }
         }
         saveLocalLeaderboard(payload);
 
-        // Open modal & refresh Top 10 rankings immediately
         this.openLeaderboardModal();
       }
 
@@ -1761,11 +1767,15 @@
         this.screenShake = 0;
         this.boss = null;
 
-        // Reset Death Screen submit button
-        const goBtn = document.getElementById('goSendScoreBtn');
+        const goBtn = document.getElementById('submitScoreBtn');
         if (goBtn) {
           goBtn.disabled = false;
           goBtn.innerText = 'SUBMIT SCORE';
+        }
+        const modalBtn = document.getElementById('sendScoreBtn');
+        if (modalBtn) {
+          modalBtn.disabled = false;
+          modalBtn.innerText = 'SUBMIT SCORE';
         }
 
         this.player = {
