@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Null-G // 16:9 HD Cyberpunk Jet Shooter</title>
+  <title>Null-G // Cyberpunk Jet Shooter</title>
   
   <!-- Google Fonts for Cyberpunk & Arcade Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -344,8 +344,8 @@
     /* Virtual Joystick Elements */
     .joystick-base {
       position: relative;
-      width: 90px;
-      height: 90px;
+      width: 95px;
+      height: 95px;
       background: rgba(0, 240, 255, 0.15);
       border: 2px solid var(--neon-cyan);
       border-radius: 50%;
@@ -356,8 +356,8 @@
     }
 
     .joystick-thumb {
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       background: rgba(0, 240, 255, 0.6);
       border: 2px solid #fff;
       border-radius: 50%;
@@ -366,8 +366,8 @@
     }
 
     .touch-btn-fire {
-      width: 80px;
-      height: 80px;
+      width: 84px;
+      height: 84px;
       background: rgba(255, 0, 127, 0.25);
       border: 2px solid var(--neon-pink);
       border-radius: 50%;
@@ -384,6 +384,19 @@
 
     .touch-btn-fire:active {
       background: rgba(255, 0, 127, 0.5);
+    }
+
+    /* Permanent Sci-Fi Creator Branding Footer */
+    .creator-branding {
+      font-family: var(--font-title);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 240, 255, 0.5);
+      text-align: center;
+      pointer-events: none;
+      margin-top: 10px;
     }
 
     /* Overlay Screen Menus & Modals */
@@ -411,9 +424,9 @@
 
     .title-logo {
       font-family: var(--font-title);
-      font-size: 56px;
+      font-size: 64px;
       font-weight: 900;
-      letter-spacing: 8px;
+      letter-spacing: 10px;
       background: linear-gradient(180deg, #ffffff 0%, var(--neon-cyan) 60%, var(--neon-pink) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -427,7 +440,7 @@
       font-size: 12px;
       letter-spacing: 4px;
       color: var(--neon-amber);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       text-transform: uppercase;
       text-align: center;
     }
@@ -437,13 +450,13 @@
       border: 1px solid var(--panel-border);
       box-shadow: 0 0 30px rgba(0, 240, 255, 0.25);
       border-radius: 12px;
-      padding: 20px 24px;
-      width: 92%;
-      max-width: 720px;
+      padding: 24px 28px;
+      width: 90%;
+      max-width: 520px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
     }
 
     .btn-action {
@@ -477,59 +490,6 @@
     .btn-secondary:hover {
       border-color: var(--neon-cyan);
       color: #fff;
-    }
-
-    /* 10-Jet Hangar Shop Grid */
-    .hangar-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      width: 100%;
-      max-height: 220px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .hangar-card {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      padding: 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .hangar-card:hover {
-      border-color: var(--neon-cyan);
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
-    }
-
-    .hangar-card.active {
-      border-color: var(--neon-cyan);
-      background: rgba(0, 240, 255, 0.15);
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.5);
-    }
-
-    .hangar-card.locked {
-      opacity: 0.6;
-      border-style: dashed;
-    }
-
-    .jet-name {
-      font-family: var(--font-title);
-      font-size: 10px;
-      color: var(--neon-cyan);
-      margin-bottom: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .jet-cost {
-      font-size: 9px;
-      color: var(--neon-gold);
-      font-family: var(--font-title);
     }
 
     /* In-Game Upgrade Shop Grid */
@@ -689,7 +649,7 @@
           <div class="hp-bar-bg">
             <div id="hpFill" class="hp-bar-fill"></div>
           </div>
-          <div class="hp-value" id="hpValue">100%</div>
+          <div class="hp-value" id="hpValue">HP: 100%</div>
           <div id="shieldBadge" class="shield-hud-badge">🛡️ 3 HITS</div>
         </div>
 
@@ -699,7 +659,7 @@
           <div class="score-txt" id="hudScore">000000</div>
           <div class="hud-center-row">
             <div class="coin-txt">⚙ <span id="coinText">0</span> COINS</div>
-            <button id="hudShopBtn" class="hud-shop-btn">🛒 [ SHOP ]</button>
+            <button id="hudShopBtn" class="hud-shop-btn">🛒 [ POWER-UP SHOP ]</button>
           </div>
         </div>
 
@@ -722,14 +682,14 @@
       </div>
     </div>
 
-    <!-- IN-GAME UPGRADE SHOP MODAL -->
+    <!-- IN-GAME POWER-UP SHOP MODAL -->
     <div id="inGameShopModal" class="menu-screen hidden">
-      <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-gold));">TACTICAL UPGRADE SHOP</div>
-      <div class="subtitle">PAUSED — UPGRADE YOUR SHIP & SURVIVE</div>
+      <div class="title-logo" style="font-size: 36px; filter: drop-shadow(0 0 20px var(--neon-gold));">POWER-UP SHOP</div>
+      <div class="subtitle">PAUSED — UPGRADE YOUR COMBAT SYSTEMS</div>
 
       <div class="menu-panel" style="max-width: 680px;">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 4px;">
-          <span style="font-family: var(--font-title); font-size: 13px; color: var(--neon-cyan);">AVAILABLE REINFORCEMENTS</span>
+          <span style="font-family: var(--font-title); font-size: 13px; color: var(--neon-cyan);">TACTICAL ENHANCEMENTS</span>
           <span style="font-family: var(--font-title); font-size: 14px; color: var(--neon-gold);">⚙ COINS: <span id="inGameShopCoins">0</span></span>
         </div>
 
@@ -755,7 +715,7 @@
               <div class="shop-item-icon">🛡️</div>
               <div>
                 <div class="shop-item-title">ENERGY SHIELD</div>
-                <div class="shop-item-desc">Adds a glowing blue barrier that absorbs the next 3 hits without taking HP damage.</div>
+                <div class="shop-item-desc">Adds a glowing blue barrier that absorbs the next 3 hits completely.</div>
               </div>
             </div>
             <div class="shop-item-footer">
@@ -770,7 +730,7 @@
               <div class="shop-item-icon">⚡</div>
               <div>
                 <div class="shop-item-title">OVERCLOCK BLASTERS</div>
-                <div class="shop-item-desc">Increases firing speed & laser width permanently for the rest of this run.</div>
+                <div class="shop-item-desc">Increases firing rate & quad laser width permanently for the rest of this run.</div>
               </div>
             </div>
             <div class="shop-item-footer">
@@ -785,7 +745,7 @@
               <div class="shop-item-icon">💥</div>
               <div>
                 <div class="shop-item-title">SMART BOMB</div>
-                <div class="shop-item-desc">Instantly clears all active enemies, trap hazards, and enemy lasers on screen.</div>
+                <div class="shop-item-desc">Instantly clears all active enemies, trap hazards, and enemy bullets on screen.</div>
               </div>
             </div>
             <div class="shop-item-footer">
@@ -797,33 +757,33 @@
 
         <button id="closeShopBtn" class="btn-action" style="margin-top: 6px;">RESUME MISSION</button>
       </div>
+
+      <div class="creator-branding">CREATED BY RAZA</div>
     </div>
 
-    <!-- START SCREEN OVERLAY -->
+    <!-- START SCREEN OVERLAY (MAIN MENU) -->
     <div id="startScreen" class="menu-screen">
       <div class="title-logo">NULL-G</div>
-      <div class="subtitle">16:9 HD 100-WAVE JET SHOOTER</div>
+      <div class="subtitle">HIGH-SPEED CYBERPUNK JET SHOOTER</div>
 
       <div class="menu-panel">
-        <!-- 10-Jet Hangar Shop -->
-        <div style="width: 100%;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span style="font-family: var(--font-title); font-size: 12px; color: var(--neon-cyan);">10-JET HANGAR SHOP</span>
-            <span style="font-family: var(--font-title); font-size: 11px; color: var(--neon-gold);">COINS: <span id="shopCoinText">0</span></span>
-          </div>
-
-          <div class="hangar-grid" id="hangarGrid">
-            <!-- Populated via JS -->
-          </div>
+        <div style="font-family: var(--font-title); font-size: 14px; color: var(--neon-cyan); letter-spacing: 2px; text-align: center;">
+          PILOT READY FOR DEPLOYMENT
+        </div>
+        <div style="font-size: 13px; color: #a0aec0; text-align: center; line-height: 1.4;">
+          Steer left and right to dodge evasive enemy squadrons, electrified trap gates, space mines, and asteroids.
         </div>
 
-        <button id="startBtn" class="btn-action">LAUNCH MISSION</button>
+        <button id="startBtn" class="btn-action">START GAME</button>
       </div>
+
+      <!-- Permanent Creator Branding Footer -->
+      <div class="creator-branding">CREATED BY RAZA</div>
     </div>
 
     <!-- GAME OVER SCREEN OVERLAY -->
     <div id="gameOverScreen" class="menu-screen hidden">
-      <div class="title-logo" style="font-size: 48px; filter: drop-shadow(0 0 25px var(--neon-pink));">GAME OVER</div>
+      <div class="title-logo" style="font-size: 52px; filter: drop-shadow(0 0 25px var(--neon-pink));">GAME OVER</div>
       <div class="subtitle" style="color: var(--neon-pink);">HULL DESTROYED</div>
 
       <div class="menu-panel" style="text-align: center; max-width: 440px;">
@@ -834,18 +794,22 @@
           WAVE REACHED: <span id="goWave">1 / 100</span>
         </div>
 
-        <div style="display: flex; gap: 10px; width: 100%;">
-          <button id="retryBtn" class="btn-action" style="flex:1;">RETRY MISSION</button>
-          <button id="menuGoBtn" class="btn-action btn-secondary" style="flex:1;">HANGAR SHOP</button>
+        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+          <button id="retryBtn" class="btn-action">RETRY MISSION</button>
+          <button id="homeGoBtn" class="btn-action btn-secondary">BACK TO HOME</button>
         </div>
       </div>
+
+      <!-- Permanent Creator Branding Footer -->
+      <div class="creator-branding">CREATED BY RAZA</div>
     </div>
   </div>
 
   <!-- GAME ENGINE SCRIPT -->
   <script>
     /* ==========================================================================
-       NULL-G: 16:9 HD LANDSCAPE REBUILD GAME ENGINE (WITH IN-GAME SHOP & SPAWNER FIX)
+       NULL-G: HIGH-SPEED CYBERPUNK JET SHOOTER (REFACTORED COMBAT ENGINE)
+       CREATED BY RAZA
        ========================================================================== */
 
     // --------------------------------------------------------------------------
@@ -1011,7 +975,7 @@
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.stars = [];
-        this.numStars = 180;
+        this.numStars = 200;
         this.init();
       }
 
@@ -1021,7 +985,7 @@
           this.stars.push({
             x: Math.random() * 1280,
             y: Math.random() * 720,
-            speed: Math.random() * 4 + 1.5,
+            speed: Math.random() * 5 + 2.0,
             size: Math.random() * 2 + 1
           });
         }
@@ -1050,7 +1014,7 @@
 
         // High-Speed Downward Stars & Warp Lines (12-16 px/frame)
         this.stars.forEach(star => {
-          star.y += star.speed * (2.8 + (wave * 0.015));
+          star.y += star.speed * (3.0 + (wave * 0.02));
           if (star.y > 720) {
             star.y = -10;
             star.x = Math.random() * 1280;
@@ -1058,7 +1022,7 @@
 
           ctx.beginPath();
           ctx.moveTo(star.x, star.y);
-          ctx.lineTo(star.x, star.y - star.size * 6);
+          ctx.lineTo(star.x, star.y - star.size * 7);
           ctx.strokeStyle = theme.starColor;
           ctx.shadowColor = theme.starColor;
           ctx.shadowBlur = 4;
@@ -1074,20 +1038,7 @@
     // --------------------------------------------------------------------------
     const STATE = { MENU: 0, PLAYING: 1, PAUSED: 2, GAMEOVER: 3 };
 
-    const JET_CATALOG = [
-      { id: 'interceptor', name: 'INTERCEPTOR', cost: 0, speed: 10, hp: 100 },
-      { id: 'cruiser', name: 'AEGIS CRUISER', cost: 500, speed: 8.5, hp: 130 },
-      { id: 'pulsar', name: 'QUANTUM PULSAR', cost: 1000, speed: 11, hp: 90 },
-      { id: 'stealth', name: 'PHANTOM STEALTH', cost: 1500, speed: 10.5, hp: 100 },
-      { id: 'striker', name: 'APEX STRIKER', cost: 2000, speed: 11.5, hp: 110 },
-      { id: 'reaper', name: 'VOID REAPER', cost: 2500, speed: 12, hp: 95 },
-      { id: 'celestial', name: 'CELESTIAL WING', cost: 3000, speed: 11, hp: 120 },
-      { id: 'bomber', name: 'HYPERION BOMBER', cost: 4000, speed: 8, hp: 150 },
-      { id: 'phantom', name: 'NEBULA PHANTOM', cost: 5000, speed: 12.5, hp: 110 },
-      { id: 'leviathan', name: 'NULL-G LEVIATHAN', cost: 10000, speed: 13, hp: 160 }
-    ];
-
-    class NullGRebuildGame {
+    class NullGGame {
       constructor() {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
@@ -1097,10 +1048,8 @@
         this.state = STATE.MENU;
         this.background = new DynamicBackground(this.canvas);
 
-        // Hangar & Currency Data
+        // Currency Data
         this.coins = parseInt(localStorage.getItem('nullg_coins') || '0');
-        this.unlockedJets = JSON.parse(localStorage.getItem('nullg_unlocked_jets') || '["interceptor"]');
-        this.selectedJet = localStorage.getItem('nullg_selected_jet') || 'interceptor';
 
         // Detect Mobile Touch Device
         this.isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
@@ -1114,7 +1063,6 @@
         this.joystickDx = 0; // -1 to +1
 
         this.setupInputListeners();
-        this.setupHangarShopUI();
         this.setupInGameShopUI();
         this.resetGame();
 
@@ -1134,7 +1082,7 @@
             this.isFiring = true;
           }
 
-          // Open In-Game Shop via Keyboard (B or S)
+          // Open Power-Up Shop via Keyboard (B or S)
           if (this.state === STATE.PLAYING && (k === 'b' || k === 's')) {
             this.openInGameShop();
           }
@@ -1176,7 +1124,8 @@
           const clampedX = Math.max(-maxRadius, Math.min(maxRadius, deltaX));
           thumb.style.transform = `translateX(${clampedX}px)`;
 
-          this.joystickDx = clampedX / maxRadius; // Normalized -1 to +1
+          // Highly sensitive responsive steering
+          this.joystickDx = (clampedX / maxRadius) * 1.3;
         };
 
         const resetJoystick = () => {
@@ -1203,10 +1152,10 @@
         }, { passive: false });
         fireBtn.addEventListener('touchend', (e) => { e.preventDefault(); this.isFiring = false; }, { passive: false });
 
-        // Menu Buttons
+        // UI Menu Navigation Buttons
         document.getElementById('startBtn').addEventListener('click', () => { sound.init(); this.startGame(); });
         document.getElementById('retryBtn').addEventListener('click', () => { sound.init(); this.startGame(); });
-        document.getElementById('menuGoBtn').addEventListener('click', () => { this.showMenu(); });
+        document.getElementById('homeGoBtn').addEventListener('click', () => { sound.init(); this.showMenu(); });
         document.getElementById('hudShopBtn').addEventListener('click', () => { sound.init(); this.openInGameShop(); });
         document.getElementById('closeShopBtn').addEventListener('click', () => { sound.init(); this.closeInGameShop(); });
 
@@ -1214,45 +1163,6 @@
           sound.init();
           const isMuted = sound.toggleMute();
           document.getElementById('audioToggleBtn').innerText = isMuted ? '🔇' : '🔊';
-        });
-      }
-
-      setupHangarShopUI() {
-        const grid = document.getElementById('hangarGrid');
-        grid.innerHTML = '';
-
-        document.getElementById('coinText').innerText = this.coins;
-        document.getElementById('shopCoinText').innerText = this.coins;
-
-        JET_CATALOG.forEach(j => {
-          const isUnlocked = this.unlockedJets.includes(j.id);
-          const isActive = this.selectedJet === j.id;
-
-          const card = document.createElement('div');
-          card.className = `hangar-card ${isActive ? 'active' : ''} ${!isUnlocked ? 'locked' : ''}`;
-          card.innerHTML = `
-            <div class="jet-name">${j.name}</div>
-            <div class="jet-cost">${isUnlocked ? (isActive ? 'EQUIPPED' : 'OWNED') : `⚙ ${j.cost}`}</div>
-          `;
-
-          card.addEventListener('click', () => {
-            sound.init();
-            if (isUnlocked) {
-              this.selectedJet = j.id;
-              localStorage.setItem('nullg_selected_jet', j.id);
-              this.setupHangarShopUI();
-            } else if (this.coins >= j.cost) {
-              this.coins -= j.cost;
-              this.unlockedJets.push(j.id);
-              this.selectedJet = j.id;
-              localStorage.setItem('nullg_coins', this.coins);
-              localStorage.setItem('nullg_unlocked_jets', JSON.stringify(this.unlockedJets));
-              localStorage.setItem('nullg_selected_jet', j.id);
-              this.setupHangarShopUI();
-            }
-          });
-
-          grid.appendChild(card);
         });
       }
 
@@ -1314,7 +1224,6 @@
 
       triggerSmartBomb() {
         this.screenShake = 25;
-        // Wipe all enemies, bullets, traps
         this.enemies.forEach(e => {
           this.score += e.score || 150;
           this.createExplosion(e.x, e.y, '#00f0ff', 25);
@@ -1341,24 +1250,22 @@
         this.spawnTimer = 0;
         this.screenShake = 0;
 
-        const currentJetData = JET_CATALOG.find(j => j.id === this.selectedJet) || JET_CATALOG[0];
-
-        // Movement Plane: Jet locked strictly at Y = 620
+        // RULE 2: Lightning-Fast Player Side Movement (maxVx = 14)
         this.player = {
           x: 640, // Center of 1280
-          y: 620,
+          y: 620, // Locked strictly along Y-axis near bottom
           vx: 0,
           angle: 0,
           width: 44,
           height: 54,
           hp: 100,
           maxHp: 100,
-          shieldHits: 0, // Energy Shield hit absorber
-          overclocked: false, // Blaster upgrade
-          speed: currentJetData.speed,
-          accel: 1.8,
-          friction: 0.86,
-          maxVx: currentJetData.speed,
+          shieldHits: 0,
+          overclocked: false,
+          speed: 14,       // High-Speed Top Velocity
+          accel: 2.5,       // Fast Acceleration
+          friction: 0.84,   // Responsive Drift Control
+          maxVx: 14,
           shootTimer: 0,
           invulnerableTimer: 0
         };
@@ -1385,7 +1292,6 @@
         document.getElementById('startScreen').classList.remove('hidden');
         document.getElementById('gameOverScreen').classList.add('hidden');
         document.getElementById('inGameShopModal').classList.add('hidden');
-        this.setupHangarShopUI();
       }
 
       triggerWaveBanner(waveNum) {
@@ -1423,7 +1329,7 @@
       update(dt) {
         const p = this.player;
 
-        // 1. Steering Inertia & Virtual Joystick (Strictly along X-axis, locked at Y=620)
+        // 1. Steering Inertia & Virtual Joystick (Strictly along X-axis, maxVx = 14)
         let dir = 0;
         if (this.keys['a'] || this.keys['arrowleft']) dir -= 1;
         if (this.keys['d'] || this.keys['arrowright']) dir += 1;
@@ -1441,20 +1347,20 @@
 
         // Strict Horizontal Clamping (between X = 40 and X = 1240)
         p.x = Math.max(40, Math.min(1240, p.x));
-        p.y = 620;
+        p.y = 620; // Locked at Y=620
 
         // 3D Banking Rotation Roll Angle
-        const targetAngle = (p.vx / p.maxVx) * 0.35;
-        p.angle += (targetAngle - p.angle) * 0.18;
+        const targetAngle = (p.vx / p.maxVx) * 0.40;
+        p.angle += (targetAngle - p.angle) * 0.20;
 
-        // Dual Animated Thruster Flame Particles
+        // Dual Thruster Flame Particles
         if (Math.random() < 0.85) {
           [-10, 10].forEach(ox => {
             this.particles.push({
               x: p.x + ox,
               y: p.y + 24,
               vx: -p.vx * 0.2 + (Math.random() - 0.5),
-              vy: Math.random() * 5 + 4,
+              vy: Math.random() * 6 + 4,
               radius: Math.random() * 3 + 1,
               color: p.shieldHits > 0 ? '#00f0ff' : '#00ff66',
               alpha: 0.9,
@@ -1465,7 +1371,7 @@
 
         // 2. Rapid Twin / Quad Plasma Firing
         p.shootTimer += dt;
-        const fireDelay = p.overclocked ? 0.09 : 0.14; // Overclocked faster rate
+        const fireDelay = p.overclocked ? 0.08 : 0.13;
         const wantsToFire = this.isFiring || this.keys['Space'] || this.keys[' '];
         if (wantsToFire && p.shootTimer >= fireDelay) {
           p.shootTimer = 0;
@@ -1478,7 +1384,7 @@
         // 4. Update Player Lasers
         for (let i = this.lasers.length - 1; i >= 0; i--) {
           const l = this.lasers[i];
-          l.y -= 18;
+          l.y -= 20;
           if (l.y < -30 || l.dead) this.lasers.splice(i, 1);
         }
 
@@ -1490,18 +1396,17 @@
           if (el.y > 750 || el.dead) this.enemyLasers.splice(i, 1);
         }
 
-        // 6. CRITICAL FIX: CONTINUOUS ENDLESS SPAWNER & ACTIVE ENEMY GUARANTEE
-        // Always maintain between 4 to 8 active enemy jets/hazards on screen
-        const targetActiveEnemies = Math.min(8, 4 + Math.floor(this.wave * 0.3));
-        const spawnInterval = Math.max(16, 50 - Math.floor(this.wave * 0.4));
+        // 6. CONTINUOUS ACTIVE ATTACKER SPAWNER (Keep 5 to 8 enemies active)
+        const targetActiveEnemies = Math.min(8, 5 + Math.floor(this.wave * 0.3));
+        const spawnInterval = Math.max(14, 45 - Math.floor(this.wave * 0.4));
         this.spawnTimer++;
 
         if (this.enemies.length < targetActiveEnemies || this.spawnTimer >= spawnInterval) {
           this.spawnTimer = 0;
-          this.spawnFrontHazard();
+          this.spawnDynamicEnemyFormation();
         }
 
-        // 7. Update Hazards, Trap Gates & Squadrons (Aggressive Firing)
+        // 7. Update Hazards, Dynamic Evasive Flight AI & Squadrons
         this.updateEnemies(dt);
 
         // 8. Update Particles
@@ -1517,7 +1422,6 @@
         this.checkCollisions();
 
         // 10. Wave Progression (+100 Coins per Wave Clear)
-        // Seamlessly roll into next wave without stalling spawner loop
         if (this.waveEnemiesDefeated >= this.waveEnemiesToDefeat) {
           this.wave++;
           this.coins += 100;
@@ -1541,88 +1445,176 @@
         const laserColor = p.overclocked ? '#ffaa00' : '#00f0ff';
 
         if (p.overclocked) {
-          // Quad Overclocked Lasers
           [-24, -10, 10, 24].forEach(ox => {
             this.lasers.push({ x: p.x + ox, y: p.y - 20, width: laserWidth, height: 26, color: laserColor });
           });
         } else {
-          // Twin Lasers
           this.lasers.push({ x: p.x - 18, y: p.y - 20, width: laserWidth, height: 22, color: laserColor });
           this.lasers.push({ x: p.x + 18, y: p.y - 20, width: laserWidth, height: 22, color: laserColor });
         }
       }
 
-      spawnFrontHazard() {
-        const spawnX = 60 + Math.random() * 1160;
+      // ------------------------------------------------------------------------
+      // RULE 1: DYNAMIC & FAST EVASIVE ENEMY FLIGHT BEHAVIORS (NO STATIC DRIFTING)
+      // ------------------------------------------------------------------------
+      spawnDynamicEnemyFormation() {
         const rand = Math.random();
 
-        if (rand < 0.22) {
-          // Trap 1: Laser Trap Gate (Two pylon drones with laser beam)
-          const gateWidth = 260;
-          const clampedX = Math.max(160, Math.min(1120 - gateWidth, spawnX));
-          this.enemies.push({
-            type: 'laserGate', x: clampedX, y: -60, width: gateWidth, height: 26, hp: 6, maxHp: 6,
-            speed: 4.8, leftPylonHp: 3, rightPylonHp: 3, score: 350
-          });
-        } else if (rand < 0.40) {
-          // Trap 2: Space Mine (Spiked mine detonating into 4 shrapnel)
-          this.enemies.push({
-            type: 'spaceMine', x: spawnX, y: -60, radius: 22, hp: 2, maxHp: 2,
-            speed: 4.5, score: 200
-          });
-        } else if (rand < 0.58) {
-          // Trap 3: Armored Asteroid Cluster (Requires 3-5 hits)
-          this.enemies.push({
-            type: 'armoredAsteroid', x: spawnX, y: -60, radius: 30, hp: 4, maxHp: 4,
-            speed: 3.8, rot: 0, rotSpeed: (Math.random() - 0.5) * 0.05, score: 180
-          });
-        } else if (rand < 0.82) {
-          // Squadron 1: V-Formation Chevron Scouts (3 to 5 fast jets)
-          const squadCount = Math.min(5, 3 + Math.floor(Math.random() * 3));
-          const offsetStep = 45;
-          for (let k = 0; k < squadCount; k++) {
-            const side = k % 2 === 0 ? 1 : -1;
-            const stepIndex = Math.ceil(k / 2);
-            const ox = side * stepIndex * offsetStep;
-            const oy = -stepIndex * 35;
+        if (rand < 0.28) {
+          // TYPE A: S-CURVE WEAVERS (Smooth sine-wave oscillation descending)
+          const baseX = 150 + Math.random() * 980;
+          const amp = 80 + Math.random() * 60;
+          const freq = 0.003 + Math.random() * 0.002;
+          const phase = Math.random() * Math.PI * 2;
 
+          this.enemies.push({
+            type: 'weaver',
+            baseX: baseX,
+            x: baseX,
+            y: -60,
+            width: 36,
+            height: 40,
+            hp: 3,
+            maxHp: 3,
+            speed: 4.8 + Math.random() * 1.5,
+            amp: amp,
+            freq: freq,
+            phase: phase,
+            shootTimer: Math.random() * 1.0,
+            score: 250
+          });
+        } else if (rand < 0.52) {
+          // TYPE B: PINCER SQUADRONS (Spawn on opposite edges, dive diagonally toward center)
+          const fromLeft = Math.random() < 0.5;
+          const spawnX = fromLeft ? -40 : 1320;
+          const targetX = 640 + (Math.random() - 0.5) * 200;
+          const vx = (targetX - spawnX) * 0.006;
+          const vy = 5.2 + Math.random() * 1.2;
+
+          this.enemies.push({
+            type: 'pincer',
+            x: spawnX,
+            y: -50,
+            width: 38,
+            height: 38,
+            hp: 2,
+            maxHp: 2,
+            vx: vx,
+            vy: vy,
+            speed: vy,
+            shootTimer: Math.random() * 0.8,
+            score: 300
+          });
+        } else if (rand < 0.72) {
+          // TYPE C: STRAFING INTERCEPTORS (Descend, pause briefly to fire aimed burst, then accelerate)
+          const spawnX = 100 + Math.random() * 1080;
+          this.enemies.push({
+            type: 'strafer',
+            x: spawnX,
+            y: -60,
+            width: 40,
+            height: 42,
+            hp: 4,
+            maxHp: 4,
+            speed: 5.0,
+            pauseY: 180 + Math.random() * 180,
+            paused: false,
+            pauseTimer: 0,
+            burstFired: false,
+            score: 350
+          });
+        } else if (rand < 0.88) {
+          // HAZARD: Laser Trap Gate or Space Mine
+          if (Math.random() < 0.5) {
+            const gateWidth = 260;
+            const clampedX = 160 + Math.random() * 960;
             this.enemies.push({
-              type: 'scout', x: Math.max(80, Math.min(1200, spawnX + ox)), y: -60 + oy,
-              width: 34, height: 38, hp: 2, maxHp: 2, speed: 5.5,
-              shootTimer: Math.random() * 0.8, // Staggered aggressive firing
-              score: 250
+              type: 'laserGate', x: clampedX, y: -60, width: gateWidth, height: 26, hp: 6, maxHp: 6,
+              speed: 4.5, score: 350
+            });
+          } else {
+            const spawnX = 80 + Math.random() * 1120;
+            this.enemies.push({
+              type: 'spaceMine', x: spawnX, y: -60, radius: 22, hp: 2, maxHp: 2,
+              speed: 4.2, score: 200
             });
           }
         } else {
-          // Squadron 2: Kamikaze Drone (Homes in on player X)
+          // HAZARD: Armored Asteroid Cluster
+          const spawnX = 80 + Math.random() * 1120;
           this.enemies.push({
-            type: 'kamikaze', x: spawnX, y: -60, radius: 16, hp: 1, maxHp: 1,
-            speed: 7.0, score: 150
+            type: 'armoredAsteroid', x: spawnX, y: -60, radius: 32, hp: 4, maxHp: 4,
+            speed: 3.5, rot: 0, rotSpeed: (Math.random() - 0.5) * 0.05, score: 180
           });
         }
       }
 
       updateEnemies(dt) {
+        const now = Date.now();
+        const p = this.player;
+
         for (let i = this.enemies.length - 1; i >= 0; i--) {
           const e = this.enemies[i];
-          e.y += e.speed;
 
-          // Kamikaze homing
-          if (e.type === 'kamikaze') {
-            const dx = this.player.x - e.x;
-            e.x += Math.sign(dx) * 1.8;
-          }
+          // S-Curve Weaver Movement
+          if (e.type === 'weaver') {
+            e.y += e.speed;
+            e.x = e.baseX + Math.sin((now * e.freq) + e.phase) * e.amp;
+            e.x = Math.max(50, Math.min(1230, e.x));
 
-          // AGGRESSIVE ENEMY JET FIRING (Downward Red Plasma Bolts every 1.5 - 2.5s)
-          if (e.type === 'scout') {
-            e.shootTimer = (e.shootTimer || 0) + dt;
-            if (e.shootTimer >= (1.5 + Math.random() * 1.0)) {
+            // Aggressive Downward Firing (every 1.5 - 2.5s)
+            e.shootTimer += dt;
+            if (e.shootTimer >= 1.8) {
               e.shootTimer = 0;
               sound.playHit();
               this.enemyLasers.push({
                 x: e.x, y: e.y + 20, speed: e.speed + 4.5, radius: 4.5, color: '#ff0055'
               });
             }
+          }
+          // Pincer Diagonal Diving Movement
+          else if (e.type === 'pincer') {
+            e.x += e.vx;
+            e.y += e.vy;
+
+            e.shootTimer += dt;
+            if (e.shootTimer >= 1.6) {
+              e.shootTimer = 0;
+              sound.playHit();
+              this.enemyLasers.push({
+                x: e.x, y: e.y + 20, speed: e.vy + 4, radius: 4.5, color: '#ff0055'
+              });
+            }
+          }
+          // Strafing Interceptor: Pause & Aim Burst
+          else if (e.type === 'strafer') {
+            if (!e.paused && e.y >= e.pauseY && !e.burstFired) {
+              e.paused = true;
+              e.pauseTimer = 0;
+            }
+
+            if (e.paused) {
+              e.pauseTimer += dt;
+              // Aimed Burst of 2 Red Plasma Bolts toward player X
+              if (e.pauseTimer >= 0.25 && !e.burstFired) {
+                e.burstFired = true;
+                sound.playHit();
+                const aimDx = (p.x - e.x) * 0.015;
+                this.enemyLasers.push({ x: e.x - 8, y: e.y + 20, vx: aimDx, vy: 9, radius: 5, color: '#ff0055' });
+                this.enemyLasers.push({ x: e.x + 8, y: e.y + 20, vx: aimDx, vy: 9, radius: 5, color: '#ff0055' });
+              }
+
+              if (e.pauseTimer >= 0.6) {
+                e.paused = false;
+                e.speed = 8.5; // Accelerate downward after pause
+              }
+            } else {
+              e.y += e.speed;
+            }
+          }
+          // Standard Hazard Descend
+          else {
+            e.y += e.speed;
           }
 
           if (e.y > 780 || e.dead) {
@@ -1632,12 +1624,12 @@
       }
 
       // ------------------------------------------------------------------------
-      // COLLISION DETECTION & EXACT DAMAGE RULES
+      // RULE 3: EXACT DAMAGE & HEALTH RULES (100% HP Standard)
       // ------------------------------------------------------------------------
       checkCollisions() {
         const p = this.player;
 
-        // A. Player Lasers vs Enemies & Pylons
+        // A. Player Lasers vs Enemies
         for (let i = this.lasers.length - 1; i >= 0; i--) {
           const l = this.lasers[i];
 
@@ -1645,7 +1637,7 @@
             const e = this.enemies[j];
             let hit = false;
 
-            if (e.type === 'spaceMine' || e.type === 'armoredAsteroid' || e.type === 'kamikaze') {
+            if (e.type === 'spaceMine' || e.type === 'armoredAsteroid') {
               hit = Math.hypot(l.x - e.x, l.y - e.y) <= (e.radius + l.width / 2);
             } else {
               hit = (l.x >= e.x - e.width / 2 && l.x <= e.x + e.width / 2 &&
@@ -1664,30 +1656,30 @@
                 this.waveEnemiesDefeated++;
                 sound.playExplosion(e.type === 'spaceMine' || e.type === 'armoredAsteroid');
 
-                // Space Mine Shrapnel Explosion
+                // Space Mine Shrapnel
                 if (e.type === 'spaceMine') {
                   [[-4.5, -4.5], [4.5, -4.5], [-4.5, 4.5], [4.5, 4.5]].forEach(([vx, vy]) => {
                     this.enemyLasers.push({ x: e.x, y: e.y, vx: vx, vy: vy, radius: 4, color: '#ffaa00' });
                   });
                 }
 
-                this.createExplosion(e.x, e.y, e.type === 'scout' ? '#ff007f' : '#ffaa00', 18);
+                this.createExplosion(e.x, e.y, '#ff007f', 18);
               }
               break;
             }
           }
         }
 
-        // B. Enemy Lasers vs Player (-7 HP per bullet hit)
+        // B. Enemy Lasers vs Player (EXACT -7 HP per plasma hit)
         for (let i = this.enemyLasers.length - 1; i >= 0; i--) {
           const el = this.enemyLasers[i];
           if (Math.hypot(el.x - p.x, el.y - p.y) <= 22) {
             el.dead = true;
-            this.damagePlayer(7); // Exact -7 HP for enemy jet bullet
+            this.damagePlayer(7); // -7 HP per bullet hit
           }
         }
 
-        // C. Trap Objects & Enemies vs Player (Exact Damage Values)
+        // C. Obstacles & Hazards vs Player (EXACT DAMAGE: Asteroid = -10 HP)
         if (p.invulnerableTimer <= 0) {
           for (let j = 0; j < this.enemies.length; j++) {
             const e = this.enemies[j];
@@ -1695,7 +1687,6 @@
             let dmg = 10;
 
             if (e.type === 'laserGate') {
-              // Check collision with center laser beam
               collided = (Math.abs(p.x - e.x) < e.width / 2 && Math.abs(p.y - e.y) < 18);
               dmg = 35; // Laser Gate Beam: -35 HP
             } else if (e.type === 'spaceMine') {
@@ -1703,7 +1694,7 @@
               dmg = 40; // Space Mine: -40 HP
             } else if (e.type === 'armoredAsteroid') {
               collided = Math.hypot(p.x - e.x, p.y - e.y) <= (e.radius + 18);
-              dmg = 10; // Obstacle / Asteroid: -10 HP
+              dmg = 10; // Crashing into any obstacle/asteroid: -10 HP
             } else {
               collided = (Math.abs(p.x - e.x) < (p.width / 2 + e.width / 2) &&
                           Math.abs(p.y - e.y) < (p.height / 2 + e.height / 2));
@@ -1724,19 +1715,19 @@
         const p = this.player;
         if (p.invulnerableTimer > 0) return;
 
-        // ENERGY SHIELD ABSORBER (Absorbs up to 3 hits completely)
+        // ENERGY SHIELD ABSORBER
         if (p.shieldHits > 0) {
           p.shieldHits--;
           sound.playShieldHit();
           this.createSparks(p.x, p.y, '#00f0ff', 15);
-          p.invulnerableTimer = 0.6; // Brief i-frames
+          p.invulnerableTimer = 0.6;
           this.updateHUD();
           return;
         }
 
         sound.playHit();
         p.hp -= amount;
-        p.invulnerableTimer = 1.0; // 1.0s i-frames
+        p.invulnerableTimer = 1.0;
         this.screenShake = 18;
 
         // 100ms Red Screen Flash
@@ -1779,17 +1770,17 @@
         if (this.state !== STATE.PLAYING && this.state !== STATE.PAUSED) return;
         const p = this.player;
 
-        // Vertical Health Fill (100 HP Standard)
+        // Side Health Gauge (HP: 100%)
         const fill = document.getElementById('hpFill');
-        const pct = Math.max(0, (p.hp / p.maxHp) * 100);
+        const pct = Math.max(0, Math.ceil((p.hp / p.maxHp) * 100));
         fill.style.height = `${pct}%`;
-        document.getElementById('hpValue').innerText = `${Math.ceil(p.hp)}%`;
+        document.getElementById('hpValue').innerText = `HP: ${pct}%`;
 
         fill.className = 'hp-bar-fill';
         if (p.hp < 25) fill.classList.add('danger');
         else if (p.hp <= 50) fill.classList.add('yellow');
 
-        // Energy Shield HUD Badge
+        // Energy Shield Badge
         const shieldBadge = document.getElementById('shieldBadge');
         if (p.shieldHits > 0) {
           shieldBadge.style.display = 'block';
@@ -1817,7 +1808,7 @@
         rc.moveTo(rw / 2, 0); rc.lineTo(rw / 2, rh);
         rc.stroke();
 
-        // Player Blip (Glowing Green / Cyan if Shielded)
+        // Player Blip
         const px = (this.player.x / 1280) * rw;
         const py = (this.player.y / 720) * rh;
 
@@ -1828,7 +1819,7 @@
         rc.arc(px, py, 3.5, 0, Math.PI * 2);
         rc.fill();
 
-        // Enemy & Trap Blips (Pulsing Red/Orange up to 400px above screen top)
+        // Enemy & Hazard Blips
         this.enemies.forEach(e => {
           const ex = (e.x / 1280) * rw;
           const ey = ((e.y + 400) / (720 + 400)) * rh;
@@ -1878,14 +1869,13 @@
         const p = this.player;
         if (p.hp <= 0) return;
 
-        // 1.0s Invulnerability Blink Flash
+        // Invulnerability Blink Flash
         if (p.invulnerableTimer > 0 && Math.floor(Date.now() / 80) % 2 === 0) return;
 
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate(p.angle);
 
-        // 3D Banking Roll Compression (scaleX down 15%)
         const scaleX = 1.0 - Math.abs(p.angle) * 0.45;
         ctx.scale(scaleX, 1.0);
 
@@ -1904,7 +1894,7 @@
           ctx.restore();
         }
 
-        // Sleek Fighter Fuselage with Metallic Gradient & Glowing Cyan Accents
+        // Sleek Fighter Fuselage
         ctx.strokeStyle = p.overclocked ? '#ffaa00' : '#00f0ff';
         ctx.shadowColor = p.overclocked ? '#ffaa00' : '#00f0ff';
         ctx.shadowBlur = 14;
@@ -1939,7 +1929,6 @@
           ctx.translate(e.x, e.y);
 
           if (e.type === 'laserGate') {
-            // Electrified Laser Gate Beam
             ctx.shadowColor = '#00f0ff';
             ctx.shadowBlur = 20;
             ctx.strokeStyle = '#00f0ff';
@@ -1950,7 +1939,6 @@
             ctx.lineTo(e.width / 2 - 15, 0);
             ctx.stroke();
 
-            // Pylons
             [-e.width / 2, e.width / 2].forEach(px => {
               ctx.fillStyle = 'rgba(20, 30, 50, 0.9)';
               ctx.strokeStyle = '#ff0055';
@@ -1965,7 +1953,6 @@
             ctx.fillStyle = 'rgba(255, 0, 85, 0.25)';
             ctx.lineWidth = 2;
 
-            // Spiked Mine
             ctx.beginPath();
             const spikes = 8;
             for (let i = 0; i < spikes; i++) {
@@ -1996,20 +1983,20 @@
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
-          } else if (e.type === 'scout' || e.type === 'kamikaze') {
-            ctx.shadowColor = e.type === 'kamikaze' ? '#ff0055' : '#ff007f';
+          } else if (e.type === 'weaver' || e.type === 'pincer' || e.type === 'strafer') {
+            ctx.shadowColor = e.type === 'strafer' ? '#ffaa00' : '#ff007f';
             ctx.shadowBlur = 15;
-            ctx.strokeStyle = e.type === 'kamikaze' ? '#ff0055' : '#ff007f';
-            ctx.fillStyle = e.type === 'kamikaze' ? 'rgba(255, 0, 85, 0.35)' : 'rgba(255, 0, 127, 0.25)';
+            ctx.strokeStyle = e.type === 'strafer' ? '#ffaa00' : '#ff007f';
+            ctx.fillStyle = e.type === 'strafer' ? 'rgba(255, 170, 0, 0.25)' : 'rgba(255, 0, 127, 0.25)';
             ctx.lineWidth = 2;
 
             ctx.beginPath();
-            ctx.moveTo(0, 20);
-            ctx.lineTo(-16, -10);
-            ctx.lineTo(-6, -16);
-            ctx.lineTo(0, -10);
-            ctx.lineTo(6, -16);
-            ctx.lineTo(16, -10);
+            ctx.moveTo(0, 22);
+            ctx.lineTo(-18, -10);
+            ctx.lineTo(-6, -18);
+            ctx.lineTo(0, -12);
+            ctx.lineTo(6, -18);
+            ctx.lineTo(18, -10);
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
@@ -2060,7 +2047,7 @@
 
     // Initialize Game Instance on Load
     window.addEventListener('load', () => {
-      window.nullGGame = new NullGRebuildGame();
+      window.nullGGame = new NullGGame();
     });
   </script>
 </body>
